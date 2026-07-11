@@ -10,4 +10,22 @@ const listProviders = async (req, res, next) => {
   }
 };
 
-module.exports = { listProviders };
+const createProvider = async (req, res, next) => {
+  try {
+    const provider = await providerService.createProvider(req.body);
+    success(res, provider, "Provider created", 201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const removeProvider = async (req, res, next) => {
+  try {
+    await providerService.removeProvider(req.params.id);
+    success(res, null, "Provider removed");
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { listProviders, createProvider, removeProvider };

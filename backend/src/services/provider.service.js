@@ -9,7 +9,7 @@ const formatProvider = (provider, role) => {
     status: provider.status
   };
 
-  if (role === "Operator") {
+  if (role === "Operator" || role === "Management") {
     return baseProvider;
   }
 
@@ -27,4 +27,11 @@ const listProviders = async (role) => {
   return providers.map((provider) => formatProvider(provider, role));
 };
 
-module.exports = { listProviders, formatProvider };
+const createProvider = async (payload) => {
+  const provider = await providerRepository.createProvider(payload);
+  return formatProvider(provider, "Management");
+};
+
+const removeProvider = (id) => providerRepository.removeProvider(id);
+
+module.exports = { listProviders, formatProvider, createProvider, removeProvider };

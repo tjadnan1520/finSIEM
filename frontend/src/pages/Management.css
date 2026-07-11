@@ -1,0 +1,91 @@
+.management-page {
+  display: grid;
+  gap: 22px;
+}
+
+.management-message {
+  margin: 0;
+  color: var(--success);
+  font-weight: 800;
+}
+
+.management-message.error {
+  color: var(--danger);
+}
+
+.management-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.management-panel {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+}
+
+.management-panel h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.management-panel form {
+  display: grid;
+  gap: 10px;
+}
+
+.management-panel input,
+.management-panel select {
+  min-height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 12px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.management-panel button {
+  min-height: 38px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 12px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 800;
+}
+
+.management-list {
+  display: grid;
+  gap: 8px;
+}
+
+.management-list div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+.management-list strong,
+.management-list small {
+  display: block;
+}
+
+.management-list small {
+  color: var(--muted);
+}
+
+.management-list button {
+  background: var(--surface-soft);
+  color: var(--danger);
+  border: 1px solid var(--border);
+}
+
+@media (max-width: 1100px) {
+  .management-grid {
+    grid-template-columns: 1fr;
+  }
+}

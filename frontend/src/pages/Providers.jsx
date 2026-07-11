@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { listProviders } from "../services/provider.service";
-import { formatCurrency, formatDateTime } from "../utils/formatters";
 import Loader from "../components/common/Loader";
 import "./Providers.css";
 
@@ -19,7 +18,7 @@ const Providers = () => {
     <div className="providers-page">
       <header>
         <h1 className="page-title">Providers</h1>
-        <p className="page-subtitle">Provider health and latest balance feed state.</p>
+        <p className="page-subtitle">Provider directory and availability status.</p>
       </header>
       <section className="providers-grid">
         {providers.map((provider) => (
@@ -28,10 +27,7 @@ const Providers = () => {
               <strong>{provider.name}</strong>
               <span>{provider.code}</span>
             </div>
-            <p>{formatCurrency(provider.balance)}</p>
-            <small>Target {formatCurrency(provider.minimumTarget)}</small>
-            <em className={`status-pill ${provider.feedStatus === "CURRENT" ? "success" : "warning"}`}>{provider.feedStatus}</em>
-            <small>Synced {formatDateTime(provider.lastSyncedAt)}</small>
+            <em className={`status-pill ${provider.status === "ACTIVE" ? "success" : "warning"}`}>{provider.status}</em>
           </article>
         ))}
       </section>

@@ -8,6 +8,13 @@ const getRoleFilters = (user) => {
     };
   }
 
+  if (user?.role === "Management") {
+    return {
+      alerts: { severity: "CRITICAL" },
+      cases: { priority: "CRITICAL" }
+    };
+  }
+
   if (user?.role === "Field Officer" || user?.role === "Agent") {
     return {
       alerts: {

@@ -4,6 +4,7 @@ import {
   BarChart3,
   BriefcaseBusiness,
   Building2,
+  Settings,
   LayoutDashboard,
   UserRound
 } from "lucide-react";
@@ -33,6 +34,7 @@ export const menuByRole = {
     { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
     { label: "Analytics", path: "/analytics", icon: BarChart3 },
     { label: "Providers", path: "/providers", icon: Building2 },
+    { label: "Management", path: "/management", icon: Settings },
     { label: "Reports", path: "/analytics", icon: BarChart3 },
     { label: "Cases", path: "/cases", icon: BriefcaseBusiness },
     { label: "Profile", path: "/profile", icon: UserRound }
@@ -46,5 +48,6 @@ export const routeTitles = {
   "/cases": "Cases",
   "/analytics": "Analytics",
   "/providers": "Providers",
+  "/management": "Management",
   "/profile": "Profile"
 };

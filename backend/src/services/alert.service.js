@@ -5,6 +5,10 @@ const getAlertVisibilityWhere = (user) => {
     return { severity: "HIGH" };
   }
 
+  if (user.role === "Management") {
+    return { severity: "CRITICAL" };
+  }
+
   if (user.role === "Field Officer" || user.role === "Agent") {
     return {
       case: {
@@ -40,7 +44,7 @@ const listAlerts = async (user) => {
 
 const canViewAlert = (alert, user) => {
   if (!alert) return false;
-  if (user.role === "Management") return true;
+  if (user.role === "Management") return alert.severity === "CRITICAL";
   if (user.role === "Operator") return alert.severity === "HIGH";
   if (user.role === "Field Officer") {
     return alert.case?.assignments?.some((assignment) => assignment.assignedToId === user.id);

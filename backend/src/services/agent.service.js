@@ -9,11 +9,25 @@ const listAgents = async (role) => {
     phone: agent.phone,
     area: agent.area.name,
     areaId: agent.areaId,
-    ...(role === "Operator" ? {} : {
+    ...(role === "Operator" || role === "Management" ? {} : {
       physicalCash: agent.physicalCash ? Number(agent.physicalCash.balance) : 0,
       minimumTarget: agent.physicalCash ? Number(agent.physicalCash.minimumTarget) : 0
     })
   }));
 };
 
-module.exports = { listAgents };
+const createAgent = async (payload) => {
+  const agent = await agentRepository.createAgent(payload);
+  return {
+    id: agent.id,
+    code: agent.code,
+    name: agent.name,
+    phone: agent.phone,
+    area: agent.area.name,
+    areaId: agent.areaId
+  };
+};
+
+const removeAgent = (id) => agentRepository.removeAgent(id);
+
+module.exports = { listAgents, createAgent, removeAgent };

@@ -31,6 +31,12 @@ const buildOperatorSummaryCards = ({ recentTransactions, recentAlerts, openCases
   { label: "Recent Transactions", value: recentTransactions.length, format: "number", tone: "info" }
 ];
 
+const buildManagementSummaryCards = ({ recentTransactions, recentAlerts, openCases }) => [
+  { label: "Critical Cases", value: openCases.filter((caseRecord) => caseRecord.priority === "CRITICAL").length, format: "number", tone: "danger" },
+  { label: "Critical Alerts", value: recentAlerts.length, format: "number", tone: "danger" },
+  { label: "Recent Transactions", value: recentTransactions.length, format: "number", tone: "info" }
+];
+
 const loadDashboard = async (user) => {
   const role = user.role;
   const raw = await dashboardRepository.getDashboardData({ includeCases: role !== "Agent", user });
@@ -68,11 +74,16 @@ const loadDashboard = async (user) => {
     provider: caseRecord.alert.provider?.name || "All Providers",
     assignedTo: caseRecord.assignments[0]?.assignedTo.name || "Unassigned"
   }));
-  const latestAnalysis = role === "Operator" ? null : raw.recentAlerts.find((alert) => alert.aiAnalysis)?.aiAnalysis;
+  const latestAnalysis = role === "Operator" || role === "Management" ? null : raw.recentAlerts.find((alert) => alert.aiAnalysis)?.aiAnalysis;
+  const summaryCards = role === "Operator"
+    ? buildOperatorSummaryCards(raw)
+    : role === "Management"
+      ? buildManagementSummaryCards(raw)
+      : buildSummaryCards(raw);
 
   return {
     role,
-    summaryCards: role === "Operator" ? buildOperatorSummaryCards(raw) : buildSummaryCards(raw),
+    summaryCards,
     recentTransactions,
     recentAlerts,
     cases,

@@ -12,6 +12,7 @@ import Cases from "../pages/Cases";
 import CaseDetails from "../pages/CaseDetails";
 import Analytics from "../pages/Analytics";
 import Providers from "../pages/Providers";
+import Management from "../pages/Management";
 import Profile from "../pages/Profile";
 import NotFound from "../pages/NotFound";
 
@@ -29,6 +30,7 @@ const AppRouter = () => (
         <Route path="/cases/:id" element={<CaseDetails />} />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/providers" element={<Providers />} />
+        <Route path="/management" element={<Management />} />
         <Route path="/profile" element={<Profile />} />
       </Route>
     </Route>
