@@ -1,6 +1,7 @@
 const providerRepository = require("../repositories/provider.repository");
 const agentRepository = require("../repositories/agent.repository");
 const transactionRepository = require("../repositories/transaction.repository");
+const dashboardService = require("./dashboard.service");
 const ApiError = require("../utils/ApiError");
 
 const toDto = (transaction) => ({
@@ -11,6 +12,7 @@ const toDto = (transaction) => ({
   amount: Number(transaction.amount),
   provider: transaction.provider.name,
   agent: transaction.agent.name,
+  agentPhone: transaction.agent.phone,
   area: transaction.area.name,
   createdAt: transaction.createdAt
 });
@@ -57,6 +59,8 @@ const createTransaction = async ({ type, amount, providerId, agentId, userId }) 
     agent,
     userId
   });
+  dashboardService.invalidateDashboardCache();
+  dashboardService.warmDashboardCache().catch(() => {});
 
   return {
     transaction: toDto(result.transaction),

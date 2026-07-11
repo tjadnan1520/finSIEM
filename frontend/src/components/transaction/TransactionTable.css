@@ -25,3 +25,17 @@
   font-size: 12px;
   text-transform: uppercase;
 }
+
+.transaction-table__agent-phone,
+.transaction-table td small {
+  display: block;
+}
+
+.transaction-table__agent-phone {
+  font-weight: 800;
+}
+
+.transaction-table td small {
+  margin-top: 3px;
+  color: var(--muted);
+}

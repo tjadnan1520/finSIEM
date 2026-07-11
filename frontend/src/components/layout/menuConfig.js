@@ -1,21 +1,17 @@
 import {
   AlertTriangle,
+  ArrowLeftRight,
   BarChart3,
   BriefcaseBusiness,
   Building2,
-  CircleDollarSign,
   LayoutDashboard,
-  LogOut,
-  UserRound,
-  WalletCards
+  UserRound
 } from "lucide-react";
 
 export const menuByRole = {
   Agent: [
     { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-    { label: "Cash In", path: "/transactions?type=CASH_IN", icon: CircleDollarSign },
-    { label: "Cash Out", path: "/transactions?type=CASH_OUT", icon: WalletCards },
-    { label: "Transactions", path: "/transactions", icon: LogOut },
+    { label: "Transactions", path: "/transactions", icon: ArrowLeftRight },
     { label: "Alerts", path: "/alerts", icon: AlertTriangle },
     { label: "Profile", path: "/profile", icon: UserRound }
   ],
@@ -24,7 +20,7 @@ export const menuByRole = {
     { label: "Alerts", path: "/alerts", icon: AlertTriangle },
     { label: "Cases", path: "/cases", icon: BriefcaseBusiness },
     { label: "Assignments", path: "/cases", icon: UserRound },
-    { label: "Transactions", path: "/transactions", icon: LogOut },
+    { label: "Transactions", path: "/transactions", icon: ArrowLeftRight },
     { label: "Profile", path: "/profile", icon: UserRound }
   ],
   Management: [

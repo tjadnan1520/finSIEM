@@ -1,45 +1,32 @@
 const dashboardRepository = require("../repositories/dashboard.repository");
 
 const toNumber = (value) => Number(value || 0);
+const cacheTtlMs = 30000;
+const dashboardCache = new Map();
 
-const buildSummaryCards = ({ providers, physicalCash, recentAlerts, openCases, latestSnapshot }) => {
-  const totalProviderBalance = providers.reduce((sum, provider) => sum + toNumber(provider.balances[0]?.balance), 0);
+const providerOrder = ["bKash", "Nagad", "Rocket"];
+
+const buildSummaryCards = ({ providers, physicalCash }) => {
   const totalPhysicalCash = physicalCash.reduce((sum, cash) => sum + toNumber(cash.balance), 0);
-  const criticalAlerts = recentAlerts.filter((alert) => alert.severity === "CRITICAL" || alert.severity === "HIGH").length;
+  const providerCards = providerOrder.map((name) => {
+    const provider = providers.find((item) => item.name.toLowerCase() === name.toLowerCase());
+
+    return {
+      label: name,
+      value: toNumber(provider?.balances[0]?.balance),
+      format: "currency",
+      tone: provider?.balances[0]?.feedStatus === "DELAYED" ? "warning" : "info"
+    };
+  });
 
   return [
-    { label: "Physical Cash", value: totalPhysicalCash, format: "currency", trend: 4.2, tone: "success" },
-    { label: "Provider Balances", value: totalProviderBalance, format: "currency", trend: -2.1, tone: "warning" },
-    { label: "Liquidity Score", value: toNumber(latestSnapshot?.liquidityScore), format: "score", trend: 1.8, tone: "info" },
-    { label: "Active Reviews", value: openCases.length, format: "number", trend: criticalAlerts, tone: criticalAlerts ? "danger" : "success" }
+    { label: "Physical Cash", value: totalPhysicalCash, format: "currency", tone: "success" },
+    ...providerCards
   ];
 };
 
-const getDashboard = async (role) => {
-  const raw = await dashboardRepository.getDashboardData();
-  const providerBalances = raw.providers.map((provider) => ({
-    id: provider.id,
-    name: provider.name,
-    code: provider.code,
-    status: provider.status,
-    balance: toNumber(provider.balances[0]?.balance),
-    minimumTarget: toNumber(provider.balances[0]?.minimumTarget),
-    feedStatus: provider.balances[0]?.feedStatus || "UNKNOWN"
-  }));
-
-  const liquidityOverview = {
-    score: toNumber(raw.latestSnapshot?.liquidityScore),
-    cashRatio: toNumber(raw.latestSnapshot?.cashRatio),
-    providerBalanceRatio: toNumber(raw.latestSnapshot?.providerBalanceRatio),
-    timeToShortage: toNumber(raw.latestSnapshot?.timeToShortage),
-    forecasts: (raw.latestSnapshot?.forecasts || []).map((forecast) => ({
-      horizonMinutes: forecast.horizonMinutes,
-      expectedLiquidity: toNumber(forecast.expectedLiquidity),
-      expectedDemand: toNumber(forecast.expectedDemand),
-      projectedShortage: toNumber(forecast.projectedShortage),
-      confidence: toNumber(forecast.confidence)
-    }))
-  };
+const loadDashboard = async (role) => {
+  const raw = await dashboardRepository.getDashboardData({ includeCases: role !== "Agent" });
 
   const recentTransactions = raw.recentTransactions.map((transaction) => ({
     id: transaction.id,
@@ -48,6 +35,7 @@ const getDashboard = async (role) => {
     amount: toNumber(transaction.amount),
     provider: transaction.provider.name,
     agent: transaction.agent.name,
+    agentPhone: transaction.agent.phone,
     area: transaction.area.name,
     status: transaction.status,
     createdAt: transaction.createdAt
@@ -73,34 +61,47 @@ const getDashboard = async (role) => {
     provider: caseRecord.alert.provider?.name || "All Providers",
     assignedTo: caseRecord.assignments[0]?.assignedTo.name || "Unassigned"
   }));
-
-  const analytics = raw.analytics.map((metric) => ({
-    id: metric.id,
-    metric: metric.metric,
-    value: toNumber(metric.value),
-    trend: toNumber(metric.trend),
-    recordedAt: metric.recordedAt
-  }));
+  const latestAnalysis = raw.recentAlerts.find((alert) => alert.aiAnalysis)?.aiAnalysis;
 
   return {
     role,
-    summaryCards: buildSummaryCards({ ...raw, openCases: raw.openCases }),
-    liquidityOverview,
-    providerBalances,
+    summaryCards: buildSummaryCards(raw),
     recentTransactions,
     recentAlerts,
     cases,
-    analytics,
-    aiRecommendation: raw.latestAnalysis ? {
-      summary: raw.latestAnalysis.summary,
-      reasoning: raw.latestAnalysis.reasoning,
-      evidenceExplanation: raw.latestAnalysis.evidenceExplanation,
-      recommendation: raw.latestAnalysis.recommendation,
-      confidence: toNumber(raw.latestAnalysis.confidence),
-      uncertainty: raw.latestAnalysis.uncertainty,
-      limitations: raw.latestAnalysis.limitations
+    aiRecommendation: latestAnalysis ? {
+      summary: latestAnalysis.summary,
+      reasoning: latestAnalysis.reasoning,
+      evidenceExplanation: latestAnalysis.evidenceExplanation,
+      recommendation: latestAnalysis.recommendation,
+      confidence: toNumber(latestAnalysis.confidence),
+      uncertainty: latestAnalysis.uncertainty,
+      limitations: latestAnalysis.limitations
     } : null
   };
 };
 
-module.exports = { getDashboard };
+const getDashboard = async (role) => {
+  const cached = dashboardCache.get(role);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.data;
+  }
+
+  const data = await loadDashboard(role);
+  dashboardCache.set(role, {
+    data,
+    expiresAt: Date.now() + cacheTtlMs
+  });
+  return data;
+};
+
+const invalidateDashboardCache = () => {
+  dashboardCache.clear();
+};
+
+const warmDashboardCache = async () => {
+  await Promise.allSettled(["Agent", "Operator", "Management"].map((role) => getDashboard(role)));
+};
+
+module.exports = { getDashboard, invalidateDashboardCache, warmDashboardCache };

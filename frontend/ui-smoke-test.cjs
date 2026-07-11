@@ -67,26 +67,41 @@ const run = async () => {
     socket.send(JSON.stringify({ id: commandId, method, params }));
   });
 
+  const waitForText = async (text, label, attempts = 30) => {
+    let body = "";
+    for (let attempt = 0; attempt < attempts; attempt += 1) {
+      await delay(500);
+      const result = await send("Runtime.evaluate", {
+        expression: "document.body.innerText",
+        returnByValue: true
+      });
+      body = result.result.result.value || "";
+      if (body.includes(text)) {
+        return body;
+      }
+    }
+    throw new Error(`${label} did not render expected text: ${text}. Saw: ${body.slice(0, 300)}`);
+  };
+
+  const setAmount = async (amount) => {
+    await send("Runtime.evaluate", {
+      expression: `
+        (() => {
+          const input = document.querySelector('input[type="number"]');
+          const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+          setter.call(input, '${amount}');
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        })()
+      `
+    });
+  };
+
   await send("Runtime.enable");
   await send("Page.enable");
   await send("Page.navigate", { url: appUrl });
 
-  let loginBody = "";
-  for (let attempt = 0; attempt < 20; attempt += 1) {
-    await delay(500);
-    const loginText = await send("Runtime.evaluate", {
-      expression: "document.body.innerText",
-      returnByValue: true
-    });
-    loginBody = loginText.result.result.value || "";
-    if (loginBody.includes("Operational workspace login")) {
-      break;
-    }
-  }
-
-  if (!loginBody.includes("Operational workspace login")) {
-    throw new Error(`Login page did not render expected text. Saw: ${loginBody.slice(0, 160)}`);
-  }
+  await waitForText("Operational workspace login", "Login page");
 
   await send("Runtime.evaluate", {
     expression: "document.querySelector('form').requestSubmit()"
@@ -103,11 +118,49 @@ const run = async () => {
     throw new Error(`Dashboard did not render after login. Path: ${dashboardValue.path}. Saw: ${dashboardValue.text.slice(0, 500)}`);
   }
 
+  for (const expectedText of ["Physical Cash", "bKash", "Nagad", "Rocket", "Transactions"]) {
+    if (!dashboardValue.text.includes(expectedText)) {
+      throw new Error(`Dashboard is missing expected text: ${expectedText}`);
+    }
+  }
+
+  for (const removedText of ["Liquidity Score", "Active Reviews", "Provider Balances"]) {
+    if (dashboardValue.text.includes(removedText)) {
+      throw new Error(`Dashboard still shows removed text: ${removedText}`);
+    }
+  }
+
+  if (dashboardValue.text.includes("Cash In\n") || dashboardValue.text.includes("Cash Out\n")) {
+    throw new Error("Sidebar still shows separate Cash In/Cash Out menu entries");
+  }
+
+  await send("Page.navigate", { url: "http://127.0.0.1:5181/transactions" });
+  await waitForText("Cash Movement", "Transactions page");
+  await waitForText("Nadia Rahman", "Transaction form options");
+  await setAmount(100);
+  await delay(300);
+  await send("Runtime.evaluate", { expression: "document.querySelector('button[type=\"submit\"]').click()" });
+  const cashInBody = await waitForText("Transaction processed successfully.", "Cash in submission", 40);
+  if (cashInBody.includes("Liquidity score")) {
+    throw new Error("Transaction form still exposes liquidity score after cash in");
+  }
+
+  await send("Runtime.evaluate", {
+    expression: "[...document.querySelectorAll('button')].find((button) => button.textContent.trim() === 'Cash Out').click()"
+  });
+  await setAmount(100);
+  await delay(300);
+  await send("Runtime.evaluate", { expression: "document.querySelector('button[type=\"submit\"]').click()" });
+  const cashOutBody = await waitForText("Transaction processed successfully.", "Cash out submission", 40);
+  if (cashOutBody.includes("Liquidity score")) {
+    throw new Error("Transaction form still exposes liquidity score after cash out");
+  }
+
   if (exceptions.length > 0) {
     throw new Error(`Browser runtime exceptions: ${exceptions.join("; ")}`);
   }
 
-  console.log("UI smoke test passed: login and dashboard rendered.");
+  console.log("UI smoke test passed: login, dashboard, cash in, and cash out rendered/worked.");
   socket.close();
 };
 

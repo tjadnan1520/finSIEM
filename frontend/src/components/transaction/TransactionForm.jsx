@@ -35,13 +35,13 @@ const TransactionForm = ({ initialType = "CASH_IN", onCreated }) => {
     setSaving(true);
     setMessage("");
     try {
-      const created = await createTransaction({
+      await createTransaction({
         type,
         providerId: form.providerId,
         agentId: form.agentId,
         amount: Number(form.amount)
       });
-      setMessage(`Transaction processed. Liquidity score ${Number(created.liquidityScore).toFixed(1)}.`);
+      setMessage("Transaction processed successfully.");
       setForm((current) => ({ ...current, amount: "" }));
       onCreated?.();
     } catch (error) {

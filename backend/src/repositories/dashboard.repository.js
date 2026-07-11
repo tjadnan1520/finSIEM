@@ -1,48 +1,94 @@
 const prisma = require("../config/prisma");
 
-const getDashboardData = async () => {
+const getDashboardData = async ({ includeCases = false } = {}) => {
   const [
     providers,
     physicalCash,
     recentTransactions,
     recentAlerts,
-    openCases,
-    analytics,
-    latestAnalysis,
-    latestSnapshot
+    openCases
   ] = await Promise.all([
     prisma.provider.findMany({
-      include: { balances: { orderBy: { lastSyncedAt: "desc" }, take: 1 } },
+      select: {
+        id: true,
+        name: true,
+        code: true,
+        status: true,
+        balances: {
+          select: {
+            balance: true,
+            minimumTarget: true,
+            feedStatus: true,
+            lastSyncedAt: true
+          },
+          orderBy: { lastSyncedAt: "desc" },
+          take: 1
+        }
+      },
       orderBy: { name: "asc" }
     }),
-    prisma.physicalCash.findMany({ include: { agent: true, area: true } }),
+    prisma.physicalCash.findMany({
+      select: {
+        balance: true
+      }
+    }),
     prisma.transaction.findMany({
-      include: { provider: true, agent: true, area: true },
-      orderBy: { createdAt: "desc" },
-      take: 8
-    }),
-    prisma.alert.findMany({
-      include: { provider: true, aiAnalysis: true },
-      orderBy: { createdAt: "desc" },
-      take: 8
-    }),
-    prisma.case.findMany({
-      include: {
-        alert: { include: { provider: true } },
-        assignments: { include: { assignedTo: { include: { role: true } } }, take: 1 }
+      select: {
+        id: true,
+        reference: true,
+        type: true,
+        amount: true,
+        status: true,
+        createdAt: true,
+        provider: { select: { name: true } },
+        agent: { select: { name: true, phone: true } },
+        area: { select: { name: true } }
       },
       orderBy: { createdAt: "desc" },
-      take: 8
+      take: 6
     }),
-    prisma.analytics.findMany({ orderBy: { recordedAt: "desc" }, take: 24 }),
-    prisma.aIAnalysis.findFirst({ orderBy: { createdAt: "desc" } }),
-    prisma.liquiditySnapshot.findFirst({
-      include: { forecasts: true },
-      orderBy: { observedAt: "desc" }
-    })
+    prisma.alert.findMany({
+      select: {
+        id: true,
+        title: true,
+        type: true,
+        severity: true,
+        status: true,
+        createdAt: true,
+        provider: { select: { name: true } },
+        aiAnalysis: {
+          select: {
+            summary: true,
+            reasoning: true,
+            evidenceExplanation: true,
+            recommendation: true,
+            confidence: true,
+            uncertainty: true,
+            limitations: true
+          }
+        }
+      },
+      orderBy: { createdAt: "desc" },
+      take: 5
+    }),
+    includeCases
+      ? prisma.case.findMany({
+          select: {
+            id: true,
+            caseNumber: true,
+            title: true,
+            status: true,
+            priority: true,
+            alert: { select: { provider: { select: { name: true } } } },
+            assignments: { select: { assignedTo: { select: { name: true } } }, take: 1 }
+          },
+          orderBy: { createdAt: "desc" },
+          take: 5
+        })
+      : Promise.resolve([])
   ]);
 
-  return { providers, physicalCash, recentTransactions, recentAlerts, openCases, analytics, latestAnalysis, latestSnapshot };
+  return { providers, physicalCash, recentTransactions, recentAlerts, openCases };
 };
 
 module.exports = { getDashboardData };

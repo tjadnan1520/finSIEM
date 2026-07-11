@@ -3,6 +3,27 @@ const env = require("../config/env");
 const userRepository = require("../repositories/user.repository");
 const ApiError = require("../utils/ApiError");
 
+const authUserCache = new Map();
+const authUserCacheTtlMs = 60000;
+
+const getCachedUser = async (userId) => {
+  const cached = authUserCache.get(userId);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.user;
+  }
+
+  const user = await userRepository.findById(userId);
+  if (user) {
+    authUserCache.set(userId, {
+      user,
+      expiresAt: Date.now() + authUserCacheTtlMs
+    });
+  }
+
+  return user;
+};
+
 const authenticate = async (req, res, next) => {
   try {
     const header = req.headers.authorization || "";
@@ -13,7 +34,7 @@ const authenticate = async (req, res, next) => {
     }
 
     const payload = jwt.verify(token, env.jwtSecret);
-    const user = await userRepository.findById(payload.sub);
+    const user = await getCachedUser(payload.sub);
 
     if (!user || !user.isActive) {
       throw new ApiError(401, "Authenticated user is no longer active");

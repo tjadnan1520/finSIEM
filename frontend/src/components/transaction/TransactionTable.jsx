@@ -30,7 +30,10 @@ const TransactionTable = ({ transactions = [] }) => (
               <td>{transaction.reference}</td>
               <td>{transaction.type.replace("_", " ")}</td>
               <td>{transaction.provider}</td>
-              <td>{transaction.agent}</td>
+              <td>
+                <span className="transaction-table__agent-phone">{transaction.agentPhone || "-"}</span>
+                <small>{transaction.agent}</small>
+              </td>
               <td>{transaction.area}</td>
               <td>{formatCurrency(transaction.amount)}</td>
               <td><span className="status-pill success">{transaction.status}</span></td>

@@ -3,8 +3,6 @@ import { useAuth } from "../context/AuthContext";
 import { getDashboard } from "../services/dashboard.service";
 import Loader from "../components/common/Loader";
 import SummaryCards from "../components/dashboard/SummaryCards";
-import LiquidityOverview from "../components/dashboard/LiquidityOverview";
-import ProviderBalance from "../components/dashboard/ProviderBalance";
 import RecentTransactions from "../components/dashboard/RecentTransactions";
 import RecentAlerts from "../components/dashboard/RecentAlerts";
 import AIRecommendation from "../components/dashboard/AIRecommendation";
@@ -39,11 +37,6 @@ const Dashboard = () => {
       </header>
 
       <SummaryCards cards={dashboard.summaryCards} />
-
-      <div className="dashboard-page__grid">
-        <LiquidityOverview data={dashboard.liquidityOverview} />
-        <ProviderBalance providers={dashboard.providerBalances} />
-      </div>
 
       <AIRecommendation recommendation={dashboard.aiRecommendation} />
 
