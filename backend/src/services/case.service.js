@@ -2,8 +2,25 @@ const prisma = require("../config/prisma");
 const userRepository = require("../repositories/user.repository");
 const ApiError = require("../utils/ApiError");
 
-const listCases = async () => {
+const getCaseVisibilityWhere = (user) => {
+  if (user.role === "Operator") {
+    return { priority: "HIGH" };
+  }
+
+  if (user.role === "Field Officer" || user.role === "Agent") {
+    return {
+      assignments: {
+        some: { assignedToId: user.id }
+      }
+    };
+  }
+
+  return {};
+};
+
+const listCases = async (user) => {
   const cases = await prisma.case.findMany({
+    where: getCaseVisibilityWhere(user),
     include: {
       alert: { include: { provider: true } },
       assignments: { include: { assignedTo: true }, orderBy: { assignedAt: "desc" }, take: 1 }
@@ -24,8 +41,18 @@ const listCases = async () => {
   }));
 };
 
-const getCaseDetails = (id) => {
-  return prisma.case.findUnique({
+const canViewCase = (caseRecord, user) => {
+  if (!caseRecord) return false;
+  if (user.role === "Management") return true;
+  if (user.role === "Operator") return caseRecord.priority === "HIGH";
+  if (user.role === "Field Officer") {
+    return caseRecord.assignments.some((assignment) => assignment.assignedToId === user.id);
+  }
+  return true;
+};
+
+const getCaseDetails = async (id, user) => {
+  const caseRecord = await prisma.case.findUnique({
     where: { id },
     include: {
       alert: { include: { provider: true, aiAnalysis: true, evidence: true } },
@@ -35,6 +62,8 @@ const getCaseDetails = (id) => {
       timeline: { orderBy: { createdAt: "asc" } }
     }
   });
+
+  return canViewCase(caseRecord, user) ? caseRecord : null;
 };
 
 const listFieldOfficers = async () => {
@@ -53,7 +82,8 @@ const transferCase = async ({ caseId, assignedToId, assignedById }) => {
     where: {
       id: assignedToId,
       isActive: true,
-      role: { name: "Agent" }
+      role: { name: { in: ["Field Officer", "Agent"] } },
+      agent: { isNot: null }
     },
     include: { agent: { include: { area: true } } }
   });

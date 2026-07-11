@@ -1,6 +1,38 @@
 const prisma = require("../config/prisma");
 
-const getDashboardData = async ({ includeCases = false } = {}) => {
+const getRoleFilters = (user) => {
+  if (user?.role === "Operator") {
+    return {
+      alerts: { severity: "HIGH" },
+      cases: { priority: "HIGH" }
+    };
+  }
+
+  if (user?.role === "Field Officer" || user?.role === "Agent") {
+    return {
+      alerts: {
+        case: {
+          assignments: {
+            some: { assignedToId: user.id }
+          }
+        }
+      },
+      cases: {
+        assignments: {
+          some: { assignedToId: user.id }
+        }
+      }
+    };
+  }
+
+  return {
+    alerts: {},
+    cases: {}
+  };
+};
+
+const getDashboardData = async ({ includeCases = false, user = null } = {}) => {
+  const roleFilters = getRoleFilters(user);
   const [
     providers,
     physicalCash,
@@ -49,6 +81,7 @@ const getDashboardData = async ({ includeCases = false } = {}) => {
       take: 6
     }),
     prisma.alert.findMany({
+      where: roleFilters.alerts,
       select: {
         id: true,
         title: true,
@@ -74,6 +107,7 @@ const getDashboardData = async ({ includeCases = false } = {}) => {
     }),
     includeCases
       ? prisma.case.findMany({
+          where: roleFilters.cases,
           select: {
             id: true,
             caseNumber: true,

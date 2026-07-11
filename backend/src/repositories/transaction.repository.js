@@ -194,11 +194,15 @@ const createTransactionWorkflow = async ({ type, amount, transactionPhone, provi
         }
       });
 
-      const operators = await tx.user.findMany({ where: { role: { name: "Operator" }, isActive: true } });
-      if (operators.length) {
+      const recipientRole = severity === "CRITICAL" ? "Management" : severity === "HIGH" ? "Operator" : null;
+      const recipients = recipientRole
+        ? await tx.user.findMany({ where: { role: { name: recipientRole }, isActive: true } })
+        : [];
+
+      if (recipients.length) {
         await tx.notification.create({
           data: {
-            userId: operators[0].id,
+            userId: recipients[0].id,
             title: "New case available",
             body: `${caseRecord.caseNumber} is ready for review.`
           }
@@ -209,7 +213,7 @@ const createTransactionWorkflow = async ({ type, amount, transactionPhone, provi
         data: [
           { caseId: caseRecord.id, event: "Alert Generated", description: alert.title },
           { caseId: caseRecord.id, event: "Case Created", description: caseRecord.title },
-          { caseId: caseRecord.id, event: "Review", description: "Waiting for a field officer transfer." }
+          { caseId: caseRecord.id, event: "Review", description: severity === "CRITICAL" ? "Management review started." : "Waiting for a field officer transfer." }
         ]
       });
     }

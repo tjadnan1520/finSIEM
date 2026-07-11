@@ -72,7 +72,7 @@ const CaseDetails = () => {
             <h2>Transfer Case</h2>
             <form className="case-transfer" onSubmit={handleTransfer}>
               <label>
-                Field Officer
+                Available Field Officer
                 <select value={assignedToId} onChange={(event) => setAssignedToId(event.target.value)}>
                   {fieldOfficers.map((officer) => (
                     <option key={officer.id} value={officer.id}>

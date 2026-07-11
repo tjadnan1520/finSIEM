@@ -8,7 +8,7 @@ const Login = () => {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [credentials, setCredentials] = useState({ email: "agent@finsiem.local", password: "Password123!" });
+  const [credentials, setCredentials] = useState({ email: "operator@finsiem.local", password: "Password123!" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -67,7 +67,7 @@ const Login = () => {
         </form>
 
         <div className="login-card__hint">
-          <span>agent@finsiem.local</span>
+          <span>fieldofficer@finsiem.local</span>
           <span>operator@finsiem.local</span>
           <span>management@finsiem.local</span>
         </div>

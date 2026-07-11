@@ -4,7 +4,7 @@ const { success } = require("../utils/apiResponse");
 
 const listCases = async (req, res, next) => {
   try {
-    const cases = await caseService.listCases();
+    const cases = await caseService.listCases(req.user);
     success(res, cases, "Cases loaded");
   } catch (error) {
     next(error);
@@ -13,7 +13,7 @@ const listCases = async (req, res, next) => {
 
 const getCaseDetails = async (req, res, next) => {
   try {
-    const caseRecord = await caseService.getCaseDetails(req.params.id);
+    const caseRecord = await caseService.getCaseDetails(req.params.id, req.user);
     if (!caseRecord) {
       throw new ApiError(404, "Case was not found");
     }

@@ -32,7 +32,8 @@ const reset = async () => {
 const createReferenceData = async () => {
   const roles = {};
   for (const role of [
-    ["Agent", "Branch and field operation user"],
+    ["Field Officer", "Field operation user"],
+    ["Agent", "Cash point record owner"],
     ["Operator", "Operations analyst and case investigator"],
     ["Management", "Management dashboard and escalation authority"]
   ]) {
@@ -46,10 +47,10 @@ const createReferenceData = async () => {
     agent: await prisma.user.create({
       data: {
         name: "Nadia Rahman",
-        email: "agent@finsiem.local",
+        email: "fieldofficer@finsiem.local",
         passwordHash: hash,
         avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Nadia%20Rahman",
-        roleId: roles.Agent.id
+        roleId: roles["Field Officer"].id
       }
     }),
     operator: await prisma.user.create({
@@ -272,16 +273,10 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
     data: {
       caseNumber: "CASE-DEMO-2002",
       title: "Escalate Rocket Sylhet feed and float review",
-      status: "ASSIGNED",
+      status: "ESCALATED",
       priority: "CRITICAL",
       alertId: rocketAlert.id
     }
-  });
-
-  await prisma.assignment.createMany({
-    data: [
-      { caseId: rocketCase.id, assignedToId: users.agent.id, assignedById: users.operator.id, status: "TRANSFERRED", acceptedAt: new Date() }
-    ]
   });
 
   await prisma.escalation.create({
@@ -306,21 +301,21 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
       { caseId: nagadCase.id, event: "Review", description: "Waiting for a field officer transfer." },
       { caseId: rocketCase.id, event: "Alert Generated", description: "Critical confidence and liquidity alert created." },
       { caseId: rocketCase.id, event: "Case Created", description: "Case opened from alert activity." },
-      { caseId: rocketCase.id, event: "Transfer", description: "Sent to Nadia Rahman for follow-up." }
+      { caseId: rocketCase.id, event: "Management Review", description: "Sent to management for review." }
     ]
   });
 
   await prisma.notification.createMany({
     data: [
       { userId: users.operator.id, title: "New case available", body: "CASE-DEMO-2001 is ready for review." },
-      { userId: users.agent.id, title: "Case transferred", body: "CASE-DEMO-2002 is ready for review." }
+      { userId: users.manager.id, title: "Critical case available", body: "CASE-DEMO-2002 is ready for review." }
     ]
   });
 
   await prisma.auditLog.createMany({
     data: [
       { actorId: users.agent.id, action: "TRANSACTION_CREATED", resource: "Transaction", newValue: { reference: "TXN-DEMO-1003" } },
-      { actorId: users.operator.id, action: "CASE_TRANSFERRED", resource: "Case", newValue: { caseNumber: "CASE-DEMO-2002", assignedToId: users.agent.id } }
+      { actorId: users.manager.id, action: "CASE_REVIEWED", resource: "Case", newValue: { caseNumber: "CASE-DEMO-2002" } }
     ]
   });
 
@@ -342,7 +337,7 @@ const main = async () => {
   await reset();
   const referenceData = await createReferenceData();
   await createOperationalData(referenceData);
-  console.log("Seed completed with Agent, Operator, and Management demo users.");
+  console.log("Seed completed with Field Officer, Operator, and Management demo users.");
 };
 
 main()

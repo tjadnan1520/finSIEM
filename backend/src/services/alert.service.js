@@ -1,7 +1,26 @@
 const prisma = require("../config/prisma");
 
-const listAlerts = async () => {
+const getAlertVisibilityWhere = (user) => {
+  if (user.role === "Operator") {
+    return { severity: "HIGH" };
+  }
+
+  if (user.role === "Field Officer" || user.role === "Agent") {
+    return {
+      case: {
+        assignments: {
+          some: { assignedToId: user.id }
+        }
+      }
+    };
+  }
+
+  return {};
+};
+
+const listAlerts = async (user) => {
   const alerts = await prisma.alert.findMany({
+    where: getAlertVisibilityWhere(user),
     include: { provider: true, aiAnalysis: true },
     orderBy: { createdAt: "desc" },
     take: 50
@@ -19,7 +38,17 @@ const listAlerts = async () => {
   }));
 };
 
-const getAlertDetails = async (id) => {
+const canViewAlert = (alert, user) => {
+  if (!alert) return false;
+  if (user.role === "Management") return true;
+  if (user.role === "Operator") return alert.severity === "HIGH";
+  if (user.role === "Field Officer") {
+    return alert.case?.assignments?.some((assignment) => assignment.assignedToId === user.id);
+  }
+  return true;
+};
+
+const getAlertDetails = async (id, user) => {
   const alert = await prisma.alert.findUnique({
     where: { id },
     include: {
@@ -30,7 +59,7 @@ const getAlertDetails = async (id) => {
     }
   });
 
-  if (!alert) {
+  if (!canViewAlert(alert, user)) {
     return null;
   }
 

@@ -31,8 +31,9 @@ const buildOperatorSummaryCards = ({ recentTransactions, recentAlerts, openCases
   { label: "Recent Transactions", value: recentTransactions.length, format: "number", tone: "info" }
 ];
 
-const loadDashboard = async (role) => {
-  const raw = await dashboardRepository.getDashboardData({ includeCases: role !== "Agent" });
+const loadDashboard = async (user) => {
+  const role = user.role;
+  const raw = await dashboardRepository.getDashboardData({ includeCases: role !== "Agent", user });
 
   const recentTransactions = raw.recentTransactions.map((transaction) => ({
     id: transaction.id,
@@ -87,15 +88,16 @@ const loadDashboard = async (role) => {
   };
 };
 
-const getDashboard = async (role) => {
-  const cached = dashboardCache.get(role);
+const getDashboard = async (user) => {
+  const cacheKey = `${user.role}:${user.id}`;
+  const cached = dashboardCache.get(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
     return cached.data;
   }
 
-  const data = await loadDashboard(role);
-  dashboardCache.set(role, {
+  const data = await loadDashboard(user);
+  dashboardCache.set(cacheKey, {
     data,
     expiresAt: Date.now() + cacheTtlMs
   });
@@ -107,7 +109,7 @@ const invalidateDashboardCache = () => {
 };
 
 const warmDashboardCache = async () => {
-  await Promise.allSettled(["Agent", "Operator", "Management"].map((role) => getDashboard(role)));
+  dashboardCache.clear();
 };
 
 module.exports = { getDashboard, invalidateDashboardCache, warmDashboardCache };

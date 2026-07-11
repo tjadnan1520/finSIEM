@@ -9,6 +9,13 @@ import {
 } from "lucide-react";
 
 export const menuByRole = {
+  "Field Officer": [
+    { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+    { label: "Transactions", path: "/transactions", icon: ArrowLeftRight },
+    { label: "Alerts", path: "/alerts", icon: AlertTriangle },
+    { label: "Cases", path: "/cases", icon: BriefcaseBusiness },
+    { label: "Profile", path: "/profile", icon: UserRound }
+  ],
   Agent: [
     { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
     { label: "Transactions", path: "/transactions", icon: ArrowLeftRight },

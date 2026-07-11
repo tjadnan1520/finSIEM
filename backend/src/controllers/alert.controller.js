@@ -4,7 +4,7 @@ const { success } = require("../utils/apiResponse");
 
 const listAlerts = async (req, res, next) => {
   try {
-    const alerts = await alertService.listAlerts();
+    const alerts = await alertService.listAlerts(req.user);
     success(res, alerts, "Alerts loaded");
   } catch (error) {
     next(error);
@@ -13,7 +13,7 @@ const listAlerts = async (req, res, next) => {
 
 const getAlertDetails = async (req, res, next) => {
   try {
-    const alert = await alertService.getAlertDetails(req.params.id);
+    const alert = await alertService.getAlertDetails(req.params.id, req.user);
     if (!alert) {
       throw new ApiError(404, "Alert was not found");
     }

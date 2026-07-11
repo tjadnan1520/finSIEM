@@ -26,7 +26,11 @@ const listOperators = () => {
 
 const listFieldOfficers = () => {
   return prisma.user.findMany({
-    where: { role: { name: "Agent" }, isActive: true },
+    where: {
+      role: { name: { in: ["Field Officer", "Agent"] } },
+      isActive: true,
+      agent: { isNot: null }
+    },
     include: {
       role: true,
       agent: { include: { area: true } }
