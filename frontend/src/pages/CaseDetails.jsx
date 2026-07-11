@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCase } from "../services/case.service";
 import { formatDateTime } from "../utils/formatters";

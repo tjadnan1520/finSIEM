@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { listCases } from "../services/case.service";
 import { formatDateTime } from "../utils/formatters";

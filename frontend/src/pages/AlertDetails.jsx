@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAlert } from "../services/alert.service";
 import { formatDateTime } from "../utils/formatters";

@@ -1,3 +1,4 @@
+import React from "react";
 import { Bell, ChevronDown, LogOut, Menu, Search, UserRound } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { routeTitles } from "./menuConfig";

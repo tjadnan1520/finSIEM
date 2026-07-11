@@ -1,3 +1,4 @@
+import React from "react";
 import { Activity, AlertTriangle, Landmark, WalletCards } from "lucide-react";
 import { formatCurrency, formatScore } from "../../utils/formatters";
 import "./SummaryCards.css";

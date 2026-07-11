@@ -1,3 +1,4 @@
+import React from "react";
 import { formatCurrency, formatScore } from "../../utils/formatters";
 import "./LiquidityOverview.css";
 

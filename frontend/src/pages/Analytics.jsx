@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getAnalytics } from "../services/analytics.service";
 import { formatDateTime } from "../utils/formatters";
 import Loader from "../components/common/Loader";

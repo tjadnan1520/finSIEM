@@ -1,3 +1,4 @@
+import React from "react";
 import { formatCurrency, formatDateTime } from "../../utils/formatters";
 import "./TransactionTable.css";
 

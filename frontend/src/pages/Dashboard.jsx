@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getDashboard } from "../services/dashboard.service";
 import Loader from "../components/common/Loader";
