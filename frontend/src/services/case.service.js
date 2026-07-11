@@ -10,12 +10,24 @@ export const getCase = async (id) => {
   return response.data;
 };
 
-export const listFieldOfficers = async () => {
-  const response = await apiClient.get("/cases/field-officers");
+export const listFieldOfficers = async ({ caseId, areaId, providerId, region } = {}) => {
+  const response = await apiClient.get("/cases/field-officers", {
+    params: {
+      ...(caseId ? { caseId } : {}),
+      ...(areaId ? { areaId } : {}),
+      ...(providerId ? { providerId } : {}),
+      ...(region ? { region } : {})
+    }
+  });
   return response.data;
 };
 
 export const transferCase = async (id, assignedToId) => {
   const response = await apiClient.post(`/cases/${id}/transfer`, { assignedToId });
+  return response.data;
+};
+
+export const resolveCase = async (id) => {
+  const response = await apiClient.post(`/cases/${id}/resolve`);
   return response.data;
 };

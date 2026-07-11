@@ -1,18 +1,18 @@
 const prisma = require("../config/prisma");
 
-const userInclude = { role: true };
+const userInclude = { role: true, operatorProvider: true };
 
 const findByEmail = (email) => {
   return prisma.user.findUnique({
     where: { email },
-    include: userInclude
+    include: { ...userInclude, fieldOfficer: { include: { area: true } } }
   });
 };
 
 const findById = (id) => {
   return prisma.user.findUnique({
     where: { id },
-    include: userInclude
+    include: { ...userInclude, fieldOfficer: { include: { area: true } } }
   });
 };
 
@@ -24,16 +24,22 @@ const listOperators = () => {
   });
 };
 
-const listFieldOfficers = () => {
+const listFieldOfficers = ({ areaId, providerId, region } = {}) => {
   return prisma.user.findMany({
     where: {
-      role: { name: { in: ["Field Officer", "Agent"] } },
+      role: { name: "Field Officer" },
       isActive: true,
-      agent: { isNot: null }
+      fieldOfficer: {
+        is: {
+          ...(areaId ? { areaId } : {}),
+          ...(providerId ? { providerId } : {}),
+          ...(region ? { area: { is: { region } } } : {})
+        }
+      }
     },
     include: {
       role: true,
-      agent: { include: { area: true } }
+      fieldOfficer: { include: { area: true, provider: true } }
     },
     orderBy: { name: "asc" }
   });

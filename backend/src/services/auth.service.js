@@ -9,7 +9,12 @@ const sanitizeUser = (user) => ({
   name: user.name,
   email: user.email,
   avatar: user.avatar,
-  role: user.role.name
+  role: user.role.name,
+  operatorProvider: user.operatorProvider ? {
+    id: user.operatorProvider.id,
+    name: user.operatorProvider.name,
+    code: user.operatorProvider.code
+  } : null
 });
 
 const signToken = (user) => {

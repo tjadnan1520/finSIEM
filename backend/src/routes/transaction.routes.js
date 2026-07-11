@@ -2,6 +2,7 @@ const express = require("express");
 const { body } = require("express-validator");
 const transactionController = require("../controllers/transaction.controller");
 const authenticate = require("../middleware/auth.middleware");
+const authorizeRoles = require("../middleware/role.middleware");
 const validateRequest = require("../middleware/validateRequest");
 
 const router = express.Router();
@@ -17,7 +18,14 @@ const transactionValidation = [
   body("agentId").isUUID().withMessage("A valid agent ID is required")
 ];
 
-router.get("/", authenticate, transactionController.listTransactions);
-router.post("/", authenticate, transactionValidation, validateRequest, transactionController.createTransaction);
+router.get("/", authenticate, authorizeRoles("Agent", "Operator", "Management"), transactionController.listTransactions);
+router.post(
+  "/",
+  authenticate,
+  authorizeRoles("Agent", "Management"),
+  transactionValidation,
+  validateRequest,
+  transactionController.createTransaction
+);
 
 module.exports = router;

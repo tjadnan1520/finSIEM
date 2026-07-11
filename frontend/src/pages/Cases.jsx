@@ -27,7 +27,7 @@ const Cases = () => {
           <Link to={`/cases/${caseRecord.id}`} key={caseRecord.id}>
             <strong>{caseRecord.caseNumber}</strong>
             <span>{caseRecord.title}</span>
-            <span>{caseRecord.assignedTo}</span>
+            <span>{caseRecord.agent ? `${caseRecord.agent.name} - ${caseRecord.agent.area}` : caseRecord.assignedTo}</span>
             <em className={`status-pill ${caseRecord.priority.toLowerCase()}`}>{caseRecord.priority}</em>
             <small>{formatDateTime(caseRecord.createdAt)}</small>
           </Link>

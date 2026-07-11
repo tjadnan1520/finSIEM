@@ -37,9 +37,15 @@ const buildManagementSummaryCards = ({ recentTransactions, recentAlerts, openCas
   { label: "Recent Transactions", value: recentTransactions.length, format: "number", tone: "info" }
 ];
 
+const buildFieldOfficerSummaryCards = ({ recentAlerts, openCases }) => [
+  { label: "Assigned Cases", value: openCases.length, format: "number", tone: "info" },
+  { label: "Open Work", value: openCases.filter((caseRecord) => caseRecord.status !== "RESOLVED" && caseRecord.status !== "CLOSED").length, format: "number", tone: "warning" },
+  { label: "Related Alerts", value: recentAlerts.length, format: "number", tone: "danger" }
+];
+
 const loadDashboard = async (user) => {
   const role = user.role;
-  const raw = await dashboardRepository.getDashboardData({ includeCases: role !== "Agent", user });
+  const raw = await dashboardRepository.getDashboardData({ includeCases: true, user });
 
   const recentTransactions = raw.recentTransactions.map((transaction) => ({
     id: transaction.id,
@@ -72,6 +78,12 @@ const loadDashboard = async (user) => {
     status: caseRecord.status,
     priority: caseRecord.priority,
     provider: caseRecord.alert.provider?.name || "All Providers",
+    agent: caseRecord.agent ? {
+      id: caseRecord.agent.id,
+      name: caseRecord.agent.name,
+      phone: caseRecord.agent.phone,
+      area: caseRecord.agent.area.name
+    } : null,
     assignedTo: caseRecord.assignments[0]?.assignedTo.name || "Unassigned"
   }));
   const latestAnalysis = role === "Operator" || role === "Management" ? null : raw.recentAlerts.find((alert) => alert.aiAnalysis)?.aiAnalysis;
@@ -79,7 +91,9 @@ const loadDashboard = async (user) => {
     ? buildOperatorSummaryCards(raw)
     : role === "Management"
       ? buildManagementSummaryCards(raw)
-      : buildSummaryCards(raw);
+      : role === "Field Officer" || role === "Agent"
+        ? buildFieldOfficerSummaryCards(raw)
+        : buildSummaryCards(raw);
 
   return {
     role,

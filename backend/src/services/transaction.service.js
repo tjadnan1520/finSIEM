@@ -17,8 +17,10 @@ const toDto = (transaction) => ({
   createdAt: transaction.createdAt
 });
 
-const listTransactions = async () => {
-  const transactions = await transactionRepository.listTransactions();
+const listTransactions = async (user = null) => {
+  const transactions = await transactionRepository.listTransactions({
+    providerId: user?.role === "Operator" ? user.operatorProviderId : null
+  });
   return transactions.map(toDto);
 };
 

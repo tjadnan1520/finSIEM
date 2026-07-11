@@ -25,7 +25,13 @@ const getCaseDetails = async (req, res, next) => {
 
 const listFieldOfficers = async (req, res, next) => {
   try {
-    const officers = await caseService.listFieldOfficers();
+    const officers = await caseService.listFieldOfficers({
+      caseId: req.query.caseId || null,
+      areaId: req.query.areaId || null,
+      providerId: req.query.providerId || null,
+      region: req.query.region || null,
+      user: req.user
+    });
     success(res, officers, "Field officers loaded");
   } catch (error) {
     next(error);
@@ -45,4 +51,16 @@ const transferCase = async (req, res, next) => {
   }
 };
 
-module.exports = { listCases, getCaseDetails, listFieldOfficers, transferCase };
+const resolveCase = async (req, res, next) => {
+  try {
+    const caseRecord = await caseService.resolveCase({
+      caseId: req.params.id,
+      userId: req.user.id
+    });
+    success(res, caseRecord, "Case resolved");
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { listCases, getCaseDetails, listFieldOfficers, resolveCase, transferCase };

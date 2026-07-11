@@ -58,6 +58,7 @@ const Dashboard = () => {
               <article key={caseRecord.id}>
                 <strong>{caseRecord.caseNumber}</strong>
                 <span>{caseRecord.title}</span>
+                {caseRecord.agent && <span>{caseRecord.agent.name} - {caseRecord.agent.area}</span>}
                 <em className={`status-pill ${caseRecord.priority.toLowerCase()}`}>{caseRecord.priority}</em>
               </article>
             ))}

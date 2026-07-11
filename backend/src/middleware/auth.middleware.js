@@ -45,7 +45,13 @@ const authenticate = async (req, res, next) => {
       name: user.name,
       email: user.email,
       avatar: user.avatar,
-      role: user.role.name
+      role: user.role.name,
+      operatorProviderId: user.operatorProviderId || null,
+      operatorProvider: user.operatorProvider ? {
+        id: user.operatorProvider.id,
+        name: user.operatorProvider.name,
+        code: user.operatorProvider.code
+      } : null
     };
 
     next();

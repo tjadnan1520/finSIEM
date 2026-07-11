@@ -9,6 +9,12 @@
   gap: 22px;
 }
 
+.case-detail-page__message {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
 .case-panel {
   padding: 22px;
 }
@@ -56,6 +62,21 @@
 }
 
 .case-transfer button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.case-resolve-button {
+  min-height: 42px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 14px;
+  background: var(--success);
+  color: white;
+  font-weight: 800;
+}
+
+.case-resolve-button:disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }

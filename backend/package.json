@@ -8,7 +8,11 @@
     "start": "node src/server.js",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.js",
+    "seed:field-officers": "node scripts/seed-field-officers.js",
+    "smoke:field-officer": "node scripts/smoke-field-officer-workflow.js",
+    "schema:provider-assignments": "node scripts/apply-provider-assignment-schema.js",
+    "check:field-network": "node scripts/check-field-network.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

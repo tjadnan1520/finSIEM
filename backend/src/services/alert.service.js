@@ -2,7 +2,10 @@ const prisma = require("../config/prisma");
 
 const getAlertVisibilityWhere = (user) => {
   if (user.role === "Operator") {
-    return { severity: "HIGH" };
+    return {
+      severity: "HIGH",
+      providerId: user.operatorProviderId || "__no_provider_assigned__"
+    };
   }
 
   if (user.role === "Management") {
@@ -45,7 +48,9 @@ const listAlerts = async (user) => {
 const canViewAlert = (alert, user) => {
   if (!alert) return false;
   if (user.role === "Management") return alert.severity === "CRITICAL";
-  if (user.role === "Operator") return alert.severity === "HIGH";
+  if (user.role === "Operator") {
+    return alert.severity === "HIGH" && alert.providerId === user.operatorProviderId;
+  }
   if (user.role === "Field Officer") {
     return alert.case?.assignments?.some((assignment) => assignment.assignedToId === user.id);
   }

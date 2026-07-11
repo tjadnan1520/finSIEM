@@ -5,6 +5,55 @@ const prisma = new PrismaClient();
 
 const password = async () => bcrypt.hash("Password123!", 12);
 
+const AREA_SEEDS = [
+  ["dhanmondi", "Dhanmondi", "Dhaka Metro"],
+  ["uttara", "Uttara", "Dhaka North"],
+  ["zindabazar", "Zindabazar", "Sylhet"],
+  ["mirpur", "Mirpur", "Dhaka Metro"],
+  ["gulshan", "Gulshan", "Dhaka North"],
+  ["motijheel", "Motijheel", "Dhaka Metro"],
+  ["agrabad", "Agrabad", "Chattogram"],
+  ["nasirabad", "Nasirabad", "Chattogram"],
+  ["rajshahi", "Shaheb Bazar", "Rajshahi"],
+  ["khulna", "Sonadanga", "Khulna"],
+  ["barishal", "Nathullabad", "Barishal"],
+  ["rangpur", "Jahaj Company", "Rangpur"],
+  ["mymensingh", "Town Hall", "Mymensingh"],
+  ["comilla", "Kandirpar", "Cumilla"],
+  ["narayanganj", "Chashara", "Narayanganj"],
+  ["gazipur", "Joydebpur", "Gazipur"],
+  ["bogura", "Satmatha", "Bogura"],
+  ["coxsbazar", "Kolatoli", "Cox's Bazar"],
+  ["jashore", "Monihar", "Jashore"],
+  ["savar", "Savar", "Dhaka District"]
+];
+
+const AGENT_NAMES = [
+  "Nadia Rahman", "Rafiq Islam", "Samira Begum", "Arif Hasan", "Jannat Sultana",
+  "Kamrul Ahsan", "Sadia Chowdhury", "Tanvir Ahmed", "Mehedi Karim", "Nusrat Jahan",
+  "Hasan Mahmud", "Farida Akter", "Sabbir Hossain", "Mst. Runa Akter", "Aminul Islam",
+  "Tania Parvin", "Rubel Mia", "Shahana Akter", "Masud Rana", "Lamia Ferdous"
+];
+
+const FIELD_OFFICER_NAMES = [
+  "Mahir Alam", "Rumana Sultana", "Imran Hossain", "Nabila Islam", "Tasnia Ahmed",
+  "Fahim Rahman", "Sakib Mahmud", "Afsana Karim", "Rifat Chowdhury", "Maliha Noor",
+  "Nayeem Hasan", "Sanjida Akter", "Mahmudul Haque", "Khadija Begum", "Rakibul Islam",
+  "Samiha Tasnim", "Anik Barua", "Sharmin Jahan", "Firoz Ahmed", "Mou Akter",
+  "Saiful Karim", "Tasmia Rahman", "Arafat Hossain", "Nishat Jahan", "Rashedul Alam",
+  "Labiba Khan", "Omar Faruk", "Sadia Islam", "Biplob Das", "Mariya Sultana",
+  "Touhidul Islam", "Farzana Yasmin", "Shovon Roy", "Sumaiya Akter", "Parvez Hossain",
+  "Raisa Ahmed", "Iqbal Hossain", "Mim Akter", "Jubayer Hasan", "Nazia Rahman"
+];
+
+const slugEmail = (value) => value.replace(/[^a-z0-9]+/gi, ".").replace(/^\.+|\.+$/g, "").toLowerCase();
+
+const providerKey = (code) => code.toLowerCase();
+
+const fieldOfficerName = (index) => FIELD_OFFICER_NAMES[index] || `Field Officer ${String(index + 1).padStart(2, "0")}`;
+
+const officerPhone = (index) => `+8801933${String(100101 + index).padStart(6, "0")}`;
+
 const reset = async () => {
   await prisma.auditLog.deleteMany();
   await prisma.notification.deleteMany();
@@ -23,6 +72,7 @@ const reset = async () => {
   await prisma.physicalCash.deleteMany();
   await prisma.providerBalance.deleteMany();
   await prisma.provider.deleteMany();
+  await prisma.fieldOfficer.deleteMany();
   await prisma.agent.deleteMany();
   await prisma.area.deleteMany();
   await prisma.user.deleteMany();
@@ -43,14 +93,42 @@ const createReferenceData = async () => {
   }
 
   const hash = await password();
+  const providers = {
+    bkash: await prisma.provider.create({ data: { name: "bKash", code: "BKASH", status: "ACTIVE" } }),
+    nagad: await prisma.provider.create({ data: { name: "Nagad", code: "NAGAD", status: "ACTIVE" } }),
+    rocket: await prisma.provider.create({ data: { name: "Rocket", code: "ROCKET", status: "DELAYED_FEED" } })
+  };
+  const providerEntries = Object.values(providers);
+
   const users = {
-    agent: await prisma.user.create({
+    bkashOperator: await prisma.user.create({
       data: {
-        name: "Nadia Rahman",
-        email: "fieldofficer@finsiem.local",
+        name: "Bikash Dutta",
+        email: "bkash.operator@finsiem.local",
         passwordHash: hash,
-        avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Nadia%20Rahman",
-        roleId: roles["Field Officer"].id
+        avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Bikash%20Dutta",
+        roleId: roles.Operator.id,
+        operatorProviderId: providers.bkash.id
+      }
+    }),
+    nagadOperator: await prisma.user.create({
+      data: {
+        name: "Nasir Uddin",
+        email: "nagad.operator@finsiem.local",
+        passwordHash: hash,
+        avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Nasir%20Uddin",
+        roleId: roles.Operator.id,
+        operatorProviderId: providers.nagad.id
+      }
+    }),
+    rocketOperator: await prisma.user.create({
+      data: {
+        name: "Rokeya Sultana",
+        email: "rocket.operator@finsiem.local",
+        passwordHash: hash,
+        avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Rokeya%20Sultana",
+        roleId: roles.Operator.id,
+        operatorProviderId: providers.rocket.id
       }
     }),
     operator: await prisma.user.create({
@@ -59,7 +137,8 @@ const createReferenceData = async () => {
         email: "operator@finsiem.local",
         passwordHash: hash,
         avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Farhan%20Chowdhury",
-        roleId: roles.Operator.id
+        roleId: roles.Operator.id,
+        operatorProviderId: providers.bkash.id
       }
     }),
     manager: await prisma.user.create({
@@ -73,53 +152,77 @@ const createReferenceData = async () => {
     })
   };
 
-  const areas = {
-    dhanmondi: await prisma.area.create({ data: { name: "Dhanmondi", region: "Dhaka Metro" } }),
-    uttara: await prisma.area.create({ data: { name: "Uttara", region: "Dhaka North" } }),
-    sylhet: await prisma.area.create({ data: { name: "Zindabazar", region: "Sylhet" } })
-  };
+  const areas = {};
+  const agents = {};
+  const fieldOfficers = {};
+  const physicalCashRows = [];
 
-  const agents = {
-    dhanmondi: await prisma.agent.create({
-      data: {
-        code: "AG-DHN-101",
-        name: "Nadia Rahman",
-        phone: "+8801711000101",
-        userId: users.agent.id,
-        areaId: areas.dhanmondi.id
-      }
-    }),
-    uttara: await prisma.agent.create({
-      data: {
-        code: "AG-UTR-204",
-        name: "Rafiq Islam",
-        phone: "+8801711000204",
-        areaId: areas.uttara.id
-      }
-    }),
-    sylhet: await prisma.agent.create({
-      data: {
-        code: "AG-SYL-312",
-        name: "Samira Begum",
-        phone: "+8801711000312",
-        areaId: areas.sylhet.id
-      }
-    })
-  };
+  for (const [index, [key, name, region]] of AREA_SEEDS.entries()) {
+    areas[key] = await prisma.area.create({ data: { name, region } });
 
-  await prisma.physicalCash.createMany({
-    data: [
-      { agentId: agents.dhanmondi.id, areaId: areas.dhanmondi.id, balance: 50000, minimumTarget: 25000 },
-      { agentId: agents.uttara.id, areaId: areas.uttara.id, balance: 45000, minimumTarget: 25000 },
-      { agentId: agents.sylhet.id, areaId: areas.sylhet.id, balance: 40000, minimumTarget: 25000 }
-    ]
-  });
+    agents[key] = await prisma.agent.create({
+      data: {
+        code: `AG-${String(index + 1).padStart(3, "0")}`,
+        name: AGENT_NAMES[index],
+        phone: `+88017${String(11000101 + index).padStart(8, "0")}`,
+        areaId: areas[key].id
+      }
+    });
 
-  const providers = {
-    bkash: await prisma.provider.create({ data: { name: "bKash", code: "BKASH", status: "ACTIVE" } }),
-    nagad: await prisma.provider.create({ data: { name: "Nagad", code: "NAGAD", status: "ACTIVE" } }),
-    rocket: await prisma.provider.create({ data: { name: "Rocket", code: "ROCKET", status: "DELAYED_FEED" } })
-  };
+    physicalCashRows.push({
+      agentId: agents[key].id,
+      areaId: areas[key].id,
+      balance: 40000 + index * 1500,
+      minimumTarget: 25000
+    });
+
+    for (const [slot, provider] of providerEntries.entries()) {
+      const officerIndex = index * providerEntries.length + slot;
+      const officerName = fieldOfficerName(officerIndex);
+      const email = index === 0 && provider.code === "BKASH"
+        ? "fieldofficer@finsiem.local"
+        : index === 1 && provider.code === "NAGAD"
+          ? "uttara.fieldofficer@finsiem.local"
+          : index === 2 && provider.code === "ROCKET"
+            ? "sylhet.fieldofficer@finsiem.local"
+            : `${slugEmail(officerName)}.${providerKey(provider.code)}@finsiem.local`;
+
+      const user = await prisma.user.create({
+        data: {
+          name: officerName,
+          email,
+          passwordHash: hash,
+          avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(officerName)}`,
+          roleId: roles["Field Officer"].id
+        }
+      });
+
+      const officerKey = `${key}_${providerKey(provider.code)}`;
+      const officerCode = index === 0 && provider.code === "BKASH"
+        ? "FO-DHN-101"
+        : index === 1 && provider.code === "NAGAD"
+          ? "FO-UTR-204"
+          : index === 2 && provider.code === "ROCKET"
+            ? "FO-SYL-312"
+            : `FO-${provider.code}-${String(index + 1).padStart(3, "0")}`;
+
+      fieldOfficers[officerKey] = await prisma.fieldOfficer.create({
+        data: {
+          code: officerCode,
+          phone: officerPhone(officerIndex),
+          userId: user.id,
+          areaId: areas[key].id,
+          providerId: provider.id
+        }
+      });
+
+      if (index === 0 && provider.code === "BKASH") users.fieldOfficer = user;
+      if (index === 1 && provider.code === "NAGAD") users.uttaraFieldOfficer = user;
+      if (index === 2 && provider.code === "ROCKET") users.sylhetFieldOfficer = user;
+    }
+  }
+
+  await prisma.physicalCash.createMany({ data: physicalCashRows });
 
   await prisma.providerBalance.createMany({
     data: [
@@ -129,22 +232,22 @@ const createReferenceData = async () => {
     ]
   });
 
-  return { users, areas, agents, providers };
+  return { users, areas, agents, fieldOfficers, providers };
 };
 
 const createOperationalData = async ({ users, areas, agents, providers }) => {
   const transactions = [
     ["TXN-DEMO-1001", "CASH_IN", 12000, "01713001001", providers.bkash.id, agents.dhanmondi.id, areas.dhanmondi.id],
     ["TXN-DEMO-1002", "CASH_OUT", 9000, "01814002002", providers.nagad.id, agents.uttara.id, areas.uttara.id],
-    ["TXN-DEMO-1003", "CASH_OUT", 11000, "01915003003", providers.rocket.id, agents.sylhet.id, areas.sylhet.id],
+    ["TXN-DEMO-1003", "CASH_OUT", 11000, "01915003003", providers.rocket.id, agents.zindabazar.id, areas.zindabazar.id],
     ["TXN-DEMO-1004", "CASH_IN", 8000, "01616004004", providers.bkash.id, agents.uttara.id, areas.uttara.id],
     ["TXN-DEMO-1005", "CASH_OUT", 7000, "01517005005", providers.nagad.id, agents.dhanmondi.id, areas.dhanmondi.id],
-    ["TXN-DEMO-1006", "CASH_OUT", 11000, "01318006006", providers.rocket.id, agents.sylhet.id, areas.sylhet.id]
+    ["TXN-DEMO-1006", "CASH_OUT", 11000, "01318006006", providers.rocket.id, agents.zindabazar.id, areas.zindabazar.id]
   ];
 
   for (const [reference, type, amount, transactionPhone, providerId, agentId, areaId] of transactions) {
     await prisma.transaction.create({
-      data: { reference, type, amount, transactionPhone, providerId, agentId, areaId, createdById: users.agent.id }
+      data: { reference, type, amount, transactionPhone, providerId, agentId, areaId }
     });
   }
 
@@ -263,9 +366,10 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
     data: {
       caseNumber: "CASE-DEMO-2001",
       title: "Review Nagad Uttara liquidity position",
-      status: "OPEN",
+      status: "ASSIGNED",
       priority: "HIGH",
-      alertId: nagadAlert.id
+      alertId: nagadAlert.id,
+      agentId: agents.uttara.id
     }
   });
 
@@ -275,7 +379,18 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
       title: "Escalate Rocket Sylhet feed and float review",
       status: "ESCALATED",
       priority: "CRITICAL",
-      alertId: rocketAlert.id
+      alertId: rocketAlert.id,
+      agentId: agents.zindabazar.id
+    }
+  });
+
+  await prisma.assignment.create({
+    data: {
+      caseId: nagadCase.id,
+      assignedToId: users.uttaraFieldOfficer.id,
+      assignedById: users.nagadOperator.id,
+      status: "TRANSFERRED",
+      acceptedAt: new Date()
     }
   });
 
@@ -298,7 +413,7 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
   await prisma.timeline.createMany({
     data: [
       { caseId: nagadCase.id, event: "Alert Generated", description: "Alert recorded for review." },
-      { caseId: nagadCase.id, event: "Review", description: "Waiting for a field officer transfer." },
+      { caseId: nagadCase.id, event: "Transfer", description: `Sent to ${users.uttaraFieldOfficer.name} for follow-up.` },
       { caseId: rocketCase.id, event: "Alert Generated", description: "Critical confidence and liquidity alert created." },
       { caseId: rocketCase.id, event: "Case Created", description: "Case opened from alert activity." },
       { caseId: rocketCase.id, event: "Management Review", description: "Sent to management for review." }
@@ -307,14 +422,14 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
 
   await prisma.notification.createMany({
     data: [
-      { userId: users.operator.id, title: "New case available", body: "CASE-DEMO-2001 is ready for review." },
+      { userId: users.uttaraFieldOfficer.id, title: "Case transferred", body: "CASE-DEMO-2001 is ready for review." },
       { userId: users.manager.id, title: "Critical case available", body: "CASE-DEMO-2002 is ready for review." }
     ]
   });
 
   await prisma.auditLog.createMany({
     data: [
-      { actorId: users.agent.id, action: "TRANSACTION_CREATED", resource: "Transaction", newValue: { reference: "TXN-DEMO-1003" } },
+      { actorId: null, action: "TRANSACTION_CREATED", resource: "Transaction", newValue: { reference: "TXN-DEMO-1003" } },
       { actorId: users.manager.id, action: "CASE_REVIEWED", resource: "Case", newValue: { caseNumber: "CASE-DEMO-2002" } }
     ]
   });
@@ -327,7 +442,7 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
       { metric: "average_confidence", value: 71.5, trend: -6.8 },
       { metric: "open_cases", value: 2, trend: 1 },
       { metric: "resolution_time_minutes", value: 42, trend: -5 },
-      { metric: "area_risk", value: 68, trend: 10.5, areaId: areas.sylhet.id },
+      { metric: "area_risk", value: 68, trend: 10.5, areaId: areas.zindabazar.id },
       { metric: "provider_health", value: 91, trend: 2.5, providerId: providers.bkash.id }
     ]
   });

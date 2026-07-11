@@ -2,16 +2,21 @@ const prisma = require("../config/prisma");
 
 const getRoleFilters = (user) => {
   if (user?.role === "Operator") {
+    const providerId = user.operatorProviderId || "__no_provider_assigned__";
     return {
-      alerts: { severity: "HIGH" },
-      cases: { priority: "HIGH" }
+      alerts: { severity: "HIGH", providerId },
+      cases: { priority: "HIGH", alert: { providerId } },
+      transactions: { providerId },
+      providers: { id: providerId }
     };
   }
 
   if (user?.role === "Management") {
     return {
       alerts: { severity: "CRITICAL" },
-      cases: { priority: "CRITICAL" }
+      cases: { priority: "CRITICAL" },
+      transactions: {},
+      providers: {}
     };
   }
 
@@ -28,13 +33,17 @@ const getRoleFilters = (user) => {
         assignments: {
           some: { assignedToId: user.id }
         }
-      }
+      },
+      transactions: { id: "__hide_transactions__" },
+      providers: { id: "__hide_providers__" }
     };
   }
 
   return {
     alerts: {},
-    cases: {}
+    cases: {},
+    transactions: {},
+    providers: {}
   };
 };
 
@@ -48,6 +57,7 @@ const getDashboardData = async ({ includeCases = false, user = null } = {}) => {
     openCases
   ] = await Promise.all([
     prisma.provider.findMany({
+      where: roleFilters.providers,
       select: {
         id: true,
         name: true,
@@ -72,6 +82,7 @@ const getDashboardData = async ({ includeCases = false, user = null } = {}) => {
       }
     }),
     prisma.transaction.findMany({
+      where: roleFilters.transactions,
       select: {
         id: true,
         reference: true,
@@ -122,6 +133,7 @@ const getDashboardData = async ({ includeCases = false, user = null } = {}) => {
             status: true,
             priority: true,
             alert: { select: { provider: { select: { name: true } } } },
+            agent: { select: { id: true, name: true, phone: true, area: { select: { name: true } } } },
             assignments: {
               select: { assignedTo: { select: { name: true } } },
               orderBy: { assignedAt: "desc" },

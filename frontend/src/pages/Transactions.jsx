@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { listTransactions } from "../services/transaction.service";
 import Loader from "../components/common/Loader";
@@ -15,14 +15,18 @@ const Transactions = () => {
   const initialType = searchParams.get("type") === "CASH_OUT" ? "CASH_OUT" : "CASH_IN";
 
   const loadTransactions = useCallback(() => {
+    if (user?.role === "Field Officer") return;
+
     listTransactions()
       .then(setTransactions)
       .catch((requestError) => setError(requestError.message));
-  }, []);
+  }, [user?.role]);
 
   useEffect(() => {
     loadTransactions();
   }, [loadTransactions]);
+
+  if (user?.role === "Field Officer") return <Navigate to="/cases" replace />;
 
   if (error) return <div className="panel page-error">{error}</div>;
 

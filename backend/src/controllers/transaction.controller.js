@@ -3,7 +3,7 @@ const { success } = require("../utils/apiResponse");
 
 const listTransactions = async (req, res, next) => {
   try {
-    const transactions = await transactionService.listTransactions();
+    const transactions = await transactionService.listTransactions(req.user);
     success(res, transactions, "Transactions loaded");
   } catch (error) {
     next(error);

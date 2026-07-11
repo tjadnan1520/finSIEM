@@ -1,8 +1,9 @@
 const prisma = require("../config/prisma");
 const ApiError = require("../utils/ApiError");
 
-const listTransactions = () => {
+const listTransactions = ({ providerId } = {}) => {
   return prisma.transaction.findMany({
+    where: providerId ? { providerId } : undefined,
       include: { provider: true, agent: { include: { area: true } }, area: true },
     orderBy: { createdAt: "desc" },
     take: 50
@@ -190,13 +191,20 @@ const createTransactionWorkflow = async ({ type, amount, transactionPhone, provi
           title: `${provider.name} operational liquidity review`,
           status: "OPEN",
           priority: severity,
-          alertId: alert.id
+          alertId: alert.id,
+          agentId: agent.id
         }
       });
 
       const recipientRole = severity === "CRITICAL" ? "Management" : severity === "HIGH" ? "Operator" : null;
       const recipients = recipientRole
-        ? await tx.user.findMany({ where: { role: { name: recipientRole }, isActive: true } })
+        ? await tx.user.findMany({
+            where: {
+              role: { name: recipientRole },
+              isActive: true,
+              ...(recipientRole === "Operator" ? { operatorProviderId: provider.id } : {})
+            }
+          })
         : [];
 
       if (recipients.length) {
