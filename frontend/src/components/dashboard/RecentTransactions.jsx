@@ -7,7 +7,7 @@ const RecentTransactions = ({ transactions = [] }) => (
     <div className="dashboard-section__header">
       <div>
         <h2>Recent Transactions</h2>
-        <p>Latest cash movement accepted by the backend workflow.</p>
+        <p>Latest completed cash movement records.</p>
       </div>
     </div>
     <div className="recent-table__scroll">
@@ -17,6 +17,7 @@ const RecentTransactions = ({ transactions = [] }) => (
             <th>Reference</th>
             <th>Type</th>
             <th>Provider</th>
+            <th>Agent</th>
             <th>Number</th>
             <th>Amount</th>
             <th>Created</th>
@@ -28,9 +29,9 @@ const RecentTransactions = ({ transactions = [] }) => (
               <td>{transaction.reference}</td>
               <td><span className="status-pill">{transaction.type.replace("_", " ")}</span></td>
               <td>{transaction.provider}</td>
+              <td>{transaction.agent}</td>
               <td>
                 <span className="recent-table__transaction-phone">{transaction.transactionPhone || "-"}</span>
-                <small>{transaction.agent}</small>
               </td>
               <td>{formatCurrency(transaction.amount)}</td>
               <td>{formatDateTime(transaction.createdAt)}</td>

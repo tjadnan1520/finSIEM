@@ -25,6 +25,12 @@ const buildSummaryCards = ({ providers, physicalCash }) => {
   ];
 };
 
+const buildOperatorSummaryCards = ({ recentTransactions, recentAlerts, openCases }) => [
+  { label: "Open Cases", value: openCases.filter((caseRecord) => caseRecord.status !== "RESOLVED" && caseRecord.status !== "CLOSED").length, format: "number", tone: "warning" },
+  { label: "Recent Alerts", value: recentAlerts.length, format: "number", tone: "danger" },
+  { label: "Recent Transactions", value: recentTransactions.length, format: "number", tone: "info" }
+];
+
 const loadDashboard = async (role) => {
   const raw = await dashboardRepository.getDashboardData({ includeCases: role !== "Agent" });
 
@@ -61,11 +67,11 @@ const loadDashboard = async (role) => {
     provider: caseRecord.alert.provider?.name || "All Providers",
     assignedTo: caseRecord.assignments[0]?.assignedTo.name || "Unassigned"
   }));
-  const latestAnalysis = raw.recentAlerts.find((alert) => alert.aiAnalysis)?.aiAnalysis;
+  const latestAnalysis = role === "Operator" ? null : raw.recentAlerts.find((alert) => alert.aiAnalysis)?.aiAnalysis;
 
   return {
     role,
-    summaryCards: buildSummaryCards(raw),
+    summaryCards: role === "Operator" ? buildOperatorSummaryCards(raw) : buildSummaryCards(raw),
     recentTransactions,
     recentAlerts,
     cases,

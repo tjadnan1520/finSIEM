@@ -9,7 +9,7 @@ const Profile = () => {
     <div className="profile-page">
       <header>
         <h1 className="page-title">Profile</h1>
-        <p className="page-subtitle">Authenticated user context from the backend JWT session.</p>
+        <p className="page-subtitle">Your account details and current role.</p>
       </header>
       <section className="profile-card panel">
         {user?.avatar && <img src={user.avatar} alt="" />}

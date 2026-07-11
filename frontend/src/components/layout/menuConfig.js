@@ -19,7 +19,6 @@ export const menuByRole = {
     { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
     { label: "Alerts", path: "/alerts", icon: AlertTriangle },
     { label: "Cases", path: "/cases", icon: BriefcaseBusiness },
-    { label: "Assignments", path: "/cases", icon: UserRound },
     { label: "Transactions", path: "/transactions", icon: ArrowLeftRight },
     { label: "Profile", path: "/profile", icon: UserRound }
   ],

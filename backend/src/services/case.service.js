@@ -1,10 +1,12 @@
 const prisma = require("../config/prisma");
+const userRepository = require("../repositories/user.repository");
+const ApiError = require("../utils/ApiError");
 
 const listCases = async () => {
   const cases = await prisma.case.findMany({
     include: {
       alert: { include: { provider: true } },
-      assignments: { include: { assignedTo: true }, take: 1 }
+      assignments: { include: { assignedTo: true }, orderBy: { assignedAt: "desc" }, take: 1 }
     },
     orderBy: { createdAt: "desc" },
     take: 50
@@ -35,4 +37,83 @@ const getCaseDetails = (id) => {
   });
 };
 
-module.exports = { listCases, getCaseDetails };
+const listFieldOfficers = async () => {
+  const officers = await userRepository.listFieldOfficers();
+  return officers.map((officer) => ({
+    id: officer.id,
+    name: officer.name,
+    email: officer.email,
+    area: officer.agent?.area?.name || "Unassigned area",
+    agentCode: officer.agent?.code || null
+  }));
+};
+
+const transferCase = async ({ caseId, assignedToId, assignedById }) => {
+  const fieldOfficer = await prisma.user.findFirst({
+    where: {
+      id: assignedToId,
+      isActive: true,
+      role: { name: "Agent" }
+    },
+    include: { agent: { include: { area: true } } }
+  });
+
+  if (!fieldOfficer) {
+    throw new ApiError(404, "Field officer was not found");
+  }
+
+  return prisma.$transaction(async (tx) => {
+    const caseRecord = await tx.case.findUnique({
+      where: { id: caseId },
+      include: { alert: { include: { provider: true } } }
+    });
+
+    if (!caseRecord) {
+      throw new ApiError(404, "Case was not found");
+    }
+
+    const assignment = await tx.assignment.create({
+      data: {
+        caseId,
+        assignedToId,
+        assignedById,
+        status: "TRANSFERRED"
+      },
+      include: { assignedTo: true, assignedBy: true }
+    });
+
+    await tx.case.update({
+      where: { id: caseId },
+      data: { status: "ASSIGNED" }
+    });
+
+    await tx.timeline.create({
+      data: {
+        caseId,
+        event: "Transfer",
+        description: `Sent to ${fieldOfficer.name} for follow-up.`
+      }
+    });
+
+    await tx.notification.create({
+      data: {
+        userId: assignedToId,
+        title: "Case transferred",
+        body: `${caseRecord.caseNumber} is ready for review.`
+      }
+    });
+
+    await tx.auditLog.create({
+      data: {
+        actorId: assignedById,
+        action: "CASE_TRANSFERRED",
+        resource: "Case",
+        newValue: { caseId, assignedToId }
+      }
+    });
+
+    return assignment;
+  });
+};
+
+module.exports = { listCases, getCaseDetails, listFieldOfficers, transferCase };

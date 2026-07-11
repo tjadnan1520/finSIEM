@@ -81,7 +81,11 @@ const getDashboardData = async ({ includeCases = false } = {}) => {
             status: true,
             priority: true,
             alert: { select: { provider: { select: { name: true } } } },
-            assignments: { select: { assignedTo: { select: { name: true } } }, take: 1 }
+            assignments: {
+              select: { assignedTo: { select: { name: true } } },
+              orderBy: { assignedAt: "desc" },
+              take: 1
+            }
           },
           orderBy: { createdAt: "desc" },
           take: 5

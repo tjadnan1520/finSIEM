@@ -18,7 +18,7 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    const message = error.response?.data?.message || "Unable to reach backend service";
+    const message = error.response?.data?.message || "Unable to complete the request";
     return Promise.reject(new Error(message));
   }
 );

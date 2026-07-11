@@ -23,4 +23,26 @@ const getCaseDetails = async (req, res, next) => {
   }
 };
 
-module.exports = { listCases, getCaseDetails };
+const listFieldOfficers = async (req, res, next) => {
+  try {
+    const officers = await caseService.listFieldOfficers();
+    success(res, officers, "Field officers loaded");
+  } catch (error) {
+    next(error);
+  }
+};
+
+const transferCase = async (req, res, next) => {
+  try {
+    const assignment = await caseService.transferCase({
+      caseId: req.params.id,
+      assignedToId: req.body.assignedToId,
+      assignedById: req.user.id
+    });
+    success(res, assignment, "Case transferred");
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { listCases, getCaseDetails, listFieldOfficers, transferCase };

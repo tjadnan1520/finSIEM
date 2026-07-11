@@ -10,8 +10,8 @@ const AIRecommendation = ({ recommendation }) => (
     <div>
       <div className="dashboard-section__header">
         <div>
-          <h2>AI Recommendation</h2>
-          <p>Explanation generated from backend-processed evidence only.</p>
+          <h2>Recommendation</h2>
+          <p>Helpful context for the current review.</p>
         </div>
         {recommendation?.confidence && (
           <span className="status-pill success">{Number(recommendation.confidence).toFixed(0)}% confidence</span>

@@ -37,11 +37,11 @@ const Login = () => {
           <span><ShieldCheck size={24} /></span>
           <div>
             <strong>finSIEM</strong>
-            <small>Decision Intelligence</small>
+            <small>Operations Workspace</small>
           </div>
         </div>
         <h1 id="login-title">Operational workspace login</h1>
-        <p>Use the seeded Agent, Operator, or Management account after backend initialization.</p>
+        <p>Sign in with your workspace account.</p>
 
         <form onSubmit={handleSubmit}>
           <label>

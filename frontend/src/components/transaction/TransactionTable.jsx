@@ -7,7 +7,7 @@ const TransactionTable = ({ transactions = [] }) => (
     <div className="dashboard-section__header">
       <div>
         <h2>Transaction Ledger</h2>
-        <p>Recent operational cash movement records.</p>
+        <p>Recent cash movement records.</p>
       </div>
     </div>
     <div className="transaction-table__scroll">
@@ -17,6 +17,7 @@ const TransactionTable = ({ transactions = [] }) => (
             <th>Reference</th>
             <th>Type</th>
             <th>Provider</th>
+            <th>Agent</th>
             <th>Number</th>
             <th>Area</th>
             <th>Amount</th>
@@ -30,9 +31,9 @@ const TransactionTable = ({ transactions = [] }) => (
               <td>{transaction.reference}</td>
               <td>{transaction.type.replace("_", " ")}</td>
               <td>{transaction.provider}</td>
+              <td>{transaction.agent}</td>
               <td>
                 <span className="transaction-table__transaction-phone">{transaction.transactionPhone || "-"}</span>
-                <small>{transaction.agent}</small>
               </td>
               <td>{transaction.area}</td>
               <td>{formatCurrency(transaction.amount)}</td>

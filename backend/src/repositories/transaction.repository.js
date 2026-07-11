@@ -188,22 +188,19 @@ const createTransactionWorkflow = async ({ type, amount, transactionPhone, provi
         data: {
           caseNumber: `CASE-${Date.now()}`,
           title: `${provider.name} operational liquidity review`,
-          status: "ASSIGNED",
+          status: "OPEN",
           priority: severity,
           alertId: alert.id
         }
       });
 
-      const assignee = await tx.user.findFirst({ where: { role: { name: "Operator" }, isActive: true } });
-      if (assignee) {
-        await tx.assignment.create({
-          data: { caseId: caseRecord.id, assignedToId: assignee.id, assignedById: userId, status: "ASSIGNED" }
-        });
+      const operators = await tx.user.findMany({ where: { role: { name: "Operator" }, isActive: true } });
+      if (operators.length) {
         await tx.notification.create({
           data: {
-            userId: assignee.id,
-            title: "New operational case assigned",
-            body: caseRecord.title
+            userId: operators[0].id,
+            title: "New case available",
+            body: `${caseRecord.caseNumber} is ready for review.`
           }
         });
       }
@@ -212,7 +209,7 @@ const createTransactionWorkflow = async ({ type, amount, transactionPhone, provi
         data: [
           { caseId: caseRecord.id, event: "Alert Generated", description: alert.title },
           { caseId: caseRecord.id, event: "Case Created", description: caseRecord.title },
-          { caseId: caseRecord.id, event: "Assignment", description: "Operator assignment created by backend rules." }
+          { caseId: caseRecord.id, event: "Review", description: "Waiting for a field officer transfer." }
         ]
       });
     }

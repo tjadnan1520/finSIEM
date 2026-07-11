@@ -32,13 +32,13 @@ const Dashboard = () => {
       <header className="dashboard-page__header">
         <div>
           <h1 className="page-title">Welcome back, {user?.name}</h1>
-          <p className="page-subtitle">{user?.role} view rendered from the shared dashboard API.</p>
+          <p className="page-subtitle">Here is your current workspace overview.</p>
         </div>
       </header>
 
       <SummaryCards cards={dashboard.summaryCards} />
 
-      <AIRecommendation recommendation={dashboard.aiRecommendation} />
+      {dashboard.aiRecommendation && <AIRecommendation recommendation={dashboard.aiRecommendation} />}
 
       <div className="dashboard-page__grid wide">
         <RecentTransactions transactions={dashboard.recentTransactions} />
@@ -49,8 +49,8 @@ const Dashboard = () => {
         <section className="dashboard-page__cases panel">
           <div className="dashboard-section__header">
             <div>
-              <h2>Assigned Operational Cases</h2>
-              <p>Cases returned by backend assignment rules.</p>
+              <h2>Cases</h2>
+              <p>Review open items and current status.</p>
             </div>
           </div>
           <div className="dashboard-page__case-list">

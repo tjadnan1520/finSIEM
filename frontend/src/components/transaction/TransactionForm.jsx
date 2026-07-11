@@ -57,7 +57,7 @@ const TransactionForm = ({ initialType = "CASH_IN", onCreated }) => {
       <div className="transaction-form__header">
         <div>
           <h2>Cash Movement</h2>
-          <p>Submit cash in or cash out directly to the backend workflow.</p>
+          <p>Enter a cash movement request.</p>
         </div>
         <div className="transaction-form__segments" role="tablist" aria-label="Transaction type">
           <button type="button" className={type === "CASH_IN" ? "active" : ""} onClick={() => setType("CASH_IN")}>

@@ -84,3 +84,79 @@ Backend listening on http://localhost:5000
 ◇ injected env (9) from .env // tip: ⌘ override existing { override: true }
 Backend listening on http://localhost:5000
 [0mGET /api/health [32m200[0m 7.688 ms - 151[0m
+[0mGET /api/auth/me [36m304[0m 1432.625 ms - -[0m
+[0mGET /api/dashboard [36m304[0m 1971.428 ms - -[0m
+[0mGET /api/providers [36m304[0m 1086.522 ms - -[0m
+[0mGET /api/agents [36m304[0m 2035.839 ms - -[0m
+[0mGET /api/transactions [36m304[0m 2693.535 ms - -[0m
+[0mPOST /api/transactions [33m422[0m 16.651 ms - 836[0m
+[0mPOST /api/transactions [32m201[0m 12094.293 ms - 387[0m
+[0mGET /api/transactions [32m200[0m 2222.206 ms - 3021[0m
+[0mGET /api/dashboard [32m200[0m 2091.586 ms - 4009[0m
+[0mGET /api/alerts/a1cab067-077e-481e-895d-ec3d6712e7f7 [32m200[0m 3546.751 ms - 3019[0m
+[0mGET /api/dashboard [36m304[0m 1309.877 ms - -[0m
+[0mPOST /api/auth/login [32m200[0m 1769.035 ms - 528[0m
+[0mGET /api/auth/me [32m200[0m 1381.761 ms - 261[0m
+[0mGET /api/dashboard [32m200[0m 4258.233 ms - 5089[0m
+[0mGET /api/alerts [32m200[0m 1680.424 ms - 1634[0m
+[0mGET /api/cases [32m200[0m 2410.276 ms - 1574[0m
+[0mGET /api/cases/93f6727c-a97f-4bfa-a9d9-d76972f55736 [32m200[0m 4043.724 ms - 4082[0m
+[0mGET /api/providers [32m200[0m 2485.077 ms - 659[0m
+[0mGET /api/agents [32m200[0m 2802.578 ms - 712[0m
+[0mGET /api/transactions [36m304[0m 3437.257 ms - -[0m
+[0mGET /api/dashboard [36m304[0m 2244.026 ms - -[0m
+[0mGET /api/alerts/a1cab067-077e-481e-895d-ec3d6712e7f7 [36m304[0m 5405.892 ms - -[0m
+[0mGET /api/cases [36m304[0m 1996.874 ms - -[0m
+[0mGET /api/providers [36m304[0m 2386.706 ms - -[0m
+[0mGET /api/agents [36m304[0m 3820.282 ms - -[0m
+[0mGET /api/transactions [36m304[0m 4421.366 ms - -[0m
+[0mGET /api/cases [36m304[0m 2207.968 ms - -[0m
+[0mGET /api/cases/93f6727c-a97f-4bfa-a9d9-d76972f55736 [36m304[0m 3934.178 ms - -[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ override existing { override: true }
+[32m[nodemon] restarting due to changes...[39m
+Backend listening on http://localhost:5000
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+Backend listening on http://localhost:5000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+Backend listening on http://localhost:5000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ override existing { override: true }
+Backend listening on http://localhost:5000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+Backend listening on http://localhost:5000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Backend listening on http://localhost:5000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ suppress logs { quiet: true }
+Backend listening on http://localhost:5000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ override existing { override: true }
+Backend listening on http://localhost:5000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ enable debugging { debug: true }
+Backend listening on http://localhost:5000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Backend listening on http://localhost:5000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ override existing { override: true }
+Backend listening on http://localhost:5000
+[0mPOST /api/auth/login [32m200[0m 1462.524 ms - 528[0m
+[0mGET /api/providers [32m200[0m 2195.824 ms - 344[0m
+[0mGET /api/agents [32m200[0m 1380.875 ms - 588[0m
+[0mGET /api/dashboard [32m200[0m 2228.910 ms - 4389[0m

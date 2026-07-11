@@ -20,7 +20,7 @@ const Cases = () => {
     <div className="cases-page">
       <header>
         <h1 className="page-title">Cases</h1>
-        <p className="page-subtitle">Human investigation workflows created from alerts.</p>
+        <p className="page-subtitle">Review cases and follow their progress.</p>
       </header>
       <section className="cases-list panel">
         {cases.map((caseRecord) => (

@@ -262,7 +262,7 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
     data: {
       caseNumber: "CASE-DEMO-2001",
       title: "Review Nagad Uttara liquidity position",
-      status: "INVESTIGATING",
+      status: "OPEN",
       priority: "HIGH",
       alertId: nagadAlert.id
     }
@@ -272,7 +272,7 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
     data: {
       caseNumber: "CASE-DEMO-2002",
       title: "Escalate Rocket Sylhet feed and float review",
-      status: "ESCALATED",
+      status: "ASSIGNED",
       priority: "CRITICAL",
       alertId: rocketAlert.id
     }
@@ -280,8 +280,7 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
 
   await prisma.assignment.createMany({
     data: [
-      { caseId: nagadCase.id, assignedToId: users.operator.id, assignedById: users.manager.id, status: "ACCEPTED", acceptedAt: new Date() },
-      { caseId: rocketCase.id, assignedToId: users.manager.id, assignedById: users.operator.id, status: "TRANSFERRED", acceptedAt: new Date() }
+      { caseId: rocketCase.id, assignedToId: users.agent.id, assignedById: users.operator.id, status: "TRANSFERRED", acceptedAt: new Date() }
     ]
   });
 
@@ -303,27 +302,25 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
 
   await prisma.timeline.createMany({
     data: [
-      { caseId: nagadCase.id, event: "Alert Generated", description: "Backend generated liquidity warning." },
-      { caseId: nagadCase.id, event: "Assignment", description: "Assigned to operations analyst." },
-      { caseId: nagadCase.id, event: "Investigation", description: "Operator began balance verification." },
+      { caseId: nagadCase.id, event: "Alert Generated", description: "Alert recorded for review." },
+      { caseId: nagadCase.id, event: "Review", description: "Waiting for a field officer transfer." },
       { caseId: rocketCase.id, event: "Alert Generated", description: "Critical confidence and liquidity alert created." },
-      { caseId: rocketCase.id, event: "Case Created", description: "Case opened automatically from alert." },
-      { caseId: rocketCase.id, event: "Escalation", description: "Transferred to management due to critical severity." }
+      { caseId: rocketCase.id, event: "Case Created", description: "Case opened from alert activity." },
+      { caseId: rocketCase.id, event: "Transfer", description: "Sent to Nadia Rahman for follow-up." }
     ]
   });
 
   await prisma.notification.createMany({
     data: [
-      { userId: users.operator.id, title: "Nagad case assigned", body: "Review Nagad Uttara liquidity position." },
-      { userId: users.manager.id, title: "Critical Rocket escalation", body: "Rocket Sylhet feed delay requires management review." }
+      { userId: users.operator.id, title: "New case available", body: "CASE-DEMO-2001 is ready for review." },
+      { userId: users.agent.id, title: "Case transferred", body: "CASE-DEMO-2002 is ready for review." }
     ]
   });
 
   await prisma.auditLog.createMany({
     data: [
       { actorId: users.agent.id, action: "TRANSACTION_CREATED", resource: "Transaction", newValue: { reference: "TXN-DEMO-1003" } },
-      { actorId: users.operator.id, action: "CASE_ACCEPTED", resource: "Case", newValue: { caseNumber: "CASE-DEMO-2001" } },
-      { actorId: users.manager.id, action: "CASE_ESCALATED", resource: "Case", newValue: { caseNumber: "CASE-DEMO-2002" } }
+      { actorId: users.operator.id, action: "CASE_TRANSFERRED", resource: "Case", newValue: { caseNumber: "CASE-DEMO-2002", assignedToId: users.agent.id } }
     ]
   });
 
