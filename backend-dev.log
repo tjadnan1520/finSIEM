@@ -160,3 +160,24 @@ Backend listening on http://localhost:5000
 [0mGET /api/providers [32m200[0m 2195.824 ms - 344[0m
 [0mGET /api/agents [32m200[0m 1380.875 ms - 588[0m
 [0mGET /api/dashboard [32m200[0m 2228.910 ms - 4389[0m
+[0mPOST /api/auth/login [32m200[0m 1324.717 ms - 528[0m
+[0mGET /api/cases/field-officers [32m200[0m 1770.214 ms - 201[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+Backend listening on http://localhost:5000
+[0mGET /api/health [32m200[0m 1.670 ms - 151[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+Backend listening on http://localhost:5000
+[0mGET /api/health [32m200[0m 7.598 ms - 151[0m
+[0mGET /api/auth/me [36m304[0m 1102.665 ms - -[0m
+[0mGET /api/cases/field-officers [32m200[0m 1756.493 ms - 201[0m
+[0mGET /api/cases/93f6727c-a97f-4bfa-a9d9-d76972f55736 [36m304[0m 4018.034 ms - -[0m
+[0mGET /api/transactions [36m304[0m 2090.683 ms - -[0m
+[0mGET /api/dashboard [32m200[0m 3.297 ms - 4389[0m
+[0mGET /api/alerts/a1cab067-077e-481e-895d-ec3d6712e7f7 [36m304[0m 3156.603 ms - -[0m
+[0mGET /api/cases [36m304[0m 2058.244 ms - -[0m
+[0mGET /api/cases/field-officers [36m304[0m 1877.094 ms - -[0m
+[0mGET /api/cases/93f6727c-a97f-4bfa-a9d9-d76972f55736 [36m304[0m 3950.705 ms - -[0m
