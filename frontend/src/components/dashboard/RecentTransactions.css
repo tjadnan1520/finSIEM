@@ -1,0 +1,30 @@
+.recent-table {
+  padding: 22px;
+}
+
+.recent-table__scroll {
+  overflow-x: auto;
+}
+
+.recent-table table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+.recent-table th,
+.recent-table td {
+  padding: 13px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.recent-table th {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.recent-table td {
+  font-size: 14px;
+}

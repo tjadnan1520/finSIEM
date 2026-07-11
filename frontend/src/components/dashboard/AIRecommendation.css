@@ -1,0 +1,33 @@
+.ai-recommendation {
+  display: grid;
+  grid-template-columns: 46px 1fr;
+  gap: 16px;
+  padding: 22px;
+}
+
+.ai-recommendation__icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--primary);
+  background: #eff6ff;
+}
+
+.ai-recommendation__body strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 17px;
+}
+
+.ai-recommendation__body p {
+  margin: 0 0 10px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.ai-recommendation__body small,
+.ai-recommendation__empty {
+  color: var(--muted);
+}

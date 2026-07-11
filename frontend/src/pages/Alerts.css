@@ -1,0 +1,35 @@
+.alerts-page {
+  display: grid;
+  gap: 22px;
+}
+
+.alerts-list {
+  display: grid;
+  padding: 12px;
+}
+
+.alerts-list a {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.alerts-list a:last-child {
+  border-bottom: 0;
+}
+
+.alerts-list strong,
+.alerts-list span {
+  display: block;
+}
+
+.alerts-list span,
+.alerts-list p {
+  color: var(--muted);
+}
+
+.alerts-list p {
+  margin: 8px 0 0;
+}

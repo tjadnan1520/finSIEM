@@ -1,0 +1,13 @@
+◇ injected env (7) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+Backend listening on http://localhost:5001
+[0mGET /api/health [32m200[0m 6.476 ms - 151[0m
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+C:\Users\Hp\Desktop\Front_End\finSIEM\backend\src\repositories\user.repository.js:6:22
+
+  3 const userInclude = { role: true };
+  4 
+  5 const findByEmail = (email) => {
+→ 6   return prisma.user.findUnique(
+The table `public.User` does not exist in the current database.
+[0mPOST /api/auth/login [31m500[0m 2532.307 ms - 1547[0m

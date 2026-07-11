@@ -1,0 +1,30 @@
+.role-layout {
+  min-height: 100vh;
+  background: var(--background);
+}
+
+.role-layout__workspace {
+  min-height: 100vh;
+  margin-left: var(--sidebar-width);
+  transition: margin-left 0.24s ease;
+}
+
+.role-layout.is-collapsed .role-layout__workspace {
+  margin-left: var(--sidebar-collapsed);
+}
+
+.role-layout__content {
+  min-height: calc(100vh - var(--navbar-height) - 72px);
+  padding: 28px;
+}
+
+@media (max-width: 768px) {
+  .role-layout__workspace,
+  .role-layout.is-collapsed .role-layout__workspace {
+    margin-left: 0;
+  }
+
+  .role-layout__content {
+    padding: 18px;
+  }
+}

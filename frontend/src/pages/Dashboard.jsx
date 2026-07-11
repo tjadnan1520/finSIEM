@@ -1,0 +1,78 @@
+import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { getDashboard } from "../services/dashboard.service";
+import Loader from "../components/common/Loader";
+import SummaryCards from "../components/dashboard/SummaryCards";
+import LiquidityOverview from "../components/dashboard/LiquidityOverview";
+import ProviderBalance from "../components/dashboard/ProviderBalance";
+import RecentTransactions from "../components/dashboard/RecentTransactions";
+import RecentAlerts from "../components/dashboard/RecentAlerts";
+import AIRecommendation from "../components/dashboard/AIRecommendation";
+import "./Dashboard.css";
+
+const Dashboard = () => {
+  const { user } = useAuth();
+  const [dashboard, setDashboard] = useState(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    getDashboard()
+      .then(setDashboard)
+      .catch((requestError) => setError(requestError.message));
+  }, []);
+
+  if (error) {
+    return <div className="panel page-error">{error}</div>;
+  }
+
+  if (!dashboard) {
+    return <Loader label="Loading dashboard" />;
+  }
+
+  return (
+    <div className="dashboard-page">
+      <header className="dashboard-page__header">
+        <div>
+          <h1 className="page-title">Welcome back, {user?.name}</h1>
+          <p className="page-subtitle">{user?.role} view rendered from the shared dashboard API.</p>
+        </div>
+      </header>
+
+      <SummaryCards cards={dashboard.summaryCards} />
+
+      <div className="dashboard-page__grid">
+        <LiquidityOverview data={dashboard.liquidityOverview} />
+        <ProviderBalance providers={dashboard.providerBalances} />
+      </div>
+
+      <AIRecommendation recommendation={dashboard.aiRecommendation} />
+
+      <div className="dashboard-page__grid wide">
+        <RecentTransactions transactions={dashboard.recentTransactions} />
+        <RecentAlerts alerts={dashboard.recentAlerts} />
+      </div>
+
+      {user?.role !== "Agent" && (
+        <section className="dashboard-page__cases panel">
+          <div className="dashboard-section__header">
+            <div>
+              <h2>Assigned Operational Cases</h2>
+              <p>Cases returned by backend assignment rules.</p>
+            </div>
+          </div>
+          <div className="dashboard-page__case-list">
+            {dashboard.cases.map((caseRecord) => (
+              <article key={caseRecord.id}>
+                <strong>{caseRecord.caseNumber}</strong>
+                <span>{caseRecord.title}</span>
+                <em className={`status-pill ${caseRecord.priority.toLowerCase()}`}>{caseRecord.priority}</em>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  );
+};
+
+export default Dashboard;

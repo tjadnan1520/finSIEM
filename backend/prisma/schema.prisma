@@ -1,0 +1,377 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum TransactionType {
+  CASH_IN
+  CASH_OUT
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum AlertType {
+  LIQUIDITY
+  RISK
+  CONFIDENCE
+  FORECAST
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum CaseStatus {
+  OPEN
+  ASSIGNED
+  ACCEPTED
+  INVESTIGATING
+  ESCALATED
+  RESOLVED
+  CLOSED
+}
+
+enum AssignmentStatus {
+  ASSIGNED
+  ACCEPTED
+  TRANSFERRED
+  COMPLETED
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String
+  users       User[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id                    String         @id @default(uuid())
+  name                  String
+  email                 String         @unique
+  passwordHash          String
+  avatar                String?
+  isActive              Boolean        @default(true)
+  roleId                String
+  role                  Role           @relation(fields: [roleId], references: [id])
+  agent                 Agent?
+  assignedCases         Assignment[]   @relation("AssignedTo")
+  createdAssignments    Assignment[]   @relation("AssignedBy")
+  caseNotes             CaseNote[]
+  notifications         Notification[]
+  auditLogs             AuditLog[]
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  @@index([roleId])
+}
+
+model Area {
+  id             String         @id @default(uuid())
+  name           String         @unique
+  region         String
+  agents         Agent[]
+  physicalCash   PhysicalCash[]
+  transactions   Transaction[]
+  analytics      Analytics[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Agent {
+  id             String         @id @default(uuid())
+  code           String         @unique
+  name           String
+  phone          String         @unique
+  userId         String?        @unique
+  user           User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  areaId         String
+  area           Area           @relation(fields: [areaId], references: [id])
+  physicalCash   PhysicalCash?
+  transactions   Transaction[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([areaId])
+}
+
+model Provider {
+  id              String            @id @default(uuid())
+  name            String            @unique
+  code            String            @unique
+  status          String            @default("ACTIVE")
+  balances        ProviderBalance[]
+  transactions    Transaction[]
+  snapshots       LiquiditySnapshot[]
+  forecasts       Forecast[]
+  alerts          Alert[]
+  analytics       Analytics[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model ProviderBalance {
+  id            String   @id @default(uuid())
+  providerId    String
+  provider      Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  balance       Decimal  @db.Decimal(14, 2)
+  minimumTarget Decimal  @db.Decimal(14, 2)
+  feedStatus    String   @default("CURRENT")
+  lastSyncedAt  DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([providerId, lastSyncedAt])
+}
+
+model PhysicalCash {
+  id            String   @id @default(uuid())
+  agentId       String   @unique
+  agent         Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  areaId        String
+  area          Area     @relation(fields: [areaId], references: [id])
+  balance       Decimal  @db.Decimal(14, 2)
+  minimumTarget Decimal  @db.Decimal(14, 2)
+  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now())
+
+  @@index([areaId])
+}
+
+model Transaction {
+  id          String            @id @default(uuid())
+  reference   String            @unique
+  type        TransactionType
+  status      TransactionStatus @default(COMPLETED)
+  amount      Decimal           @db.Decimal(14, 2)
+  providerId  String
+  provider    Provider          @relation(fields: [providerId], references: [id])
+  agentId     String
+  agent       Agent             @relation(fields: [agentId], references: [id])
+  areaId      String
+  area        Area              @relation(fields: [areaId], references: [id])
+  createdById String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([type, createdAt])
+  @@index([providerId, createdAt])
+  @@index([agentId, createdAt])
+  @@index([areaId, createdAt])
+}
+
+model LiquiditySnapshot {
+  id                   String    @id @default(uuid())
+  providerId           String?
+  provider             Provider? @relation(fields: [providerId], references: [id], onDelete: SetNull)
+  cashRatio            Decimal   @db.Decimal(6, 2)
+  providerBalanceRatio Decimal   @db.Decimal(6, 2)
+  timeToShortage       Decimal   @db.Decimal(6, 2)
+  liquidityScore       Decimal   @db.Decimal(6, 2)
+  totalPhysicalCash    Decimal   @db.Decimal(14, 2)
+  totalProviderBalance Decimal   @db.Decimal(14, 2)
+  observedAt           DateTime  @default(now())
+  forecasts            Forecast[]
+  alerts               Alert[]
+  analytics            Analytics[]
+
+  @@index([providerId, observedAt])
+  @@index([liquidityScore])
+}
+
+model Forecast {
+  id                 String             @id @default(uuid())
+  providerId         String?
+  provider           Provider?          @relation(fields: [providerId], references: [id], onDelete: SetNull)
+  snapshotId         String
+  snapshot           LiquiditySnapshot  @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  horizonMinutes     Int
+  expectedLiquidity  Decimal            @db.Decimal(6, 2)
+  expectedDemand     Decimal            @db.Decimal(14, 2)
+  projectedShortage  Decimal            @db.Decimal(14, 2)
+  confidence         Decimal            @db.Decimal(6, 2)
+  createdAt          DateTime           @default(now())
+
+  @@index([providerId, horizonMinutes])
+  @@index([snapshotId])
+}
+
+model AIAnalysis {
+  id                    String    @id @default(uuid())
+  summary               String
+  reasoning             String
+  evidenceExplanation   String
+  recommendation        String
+  confidence            Decimal   @db.Decimal(6, 2)
+  uncertainty           String
+  limitations           String
+  alert                 Alert?
+  createdAt             DateTime  @default(now())
+}
+
+model Alert {
+  id             String             @id @default(uuid())
+  title          String
+  type           AlertType
+  severity       Severity
+  status         String             @default("OPEN")
+  providerId     String?
+  provider       Provider?          @relation(fields: [providerId], references: [id], onDelete: SetNull)
+  snapshotId     String?
+  snapshot       LiquiditySnapshot? @relation(fields: [snapshotId], references: [id], onDelete: SetNull)
+  aiAnalysisId   String?            @unique
+  aiAnalysis     AIAnalysis?        @relation(fields: [aiAnalysisId], references: [id], onDelete: SetNull)
+  evidence       Evidence[]
+  case           Case?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@index([severity, status])
+  @@index([providerId, createdAt])
+}
+
+model Evidence {
+  id          String   @id @default(uuid())
+  alertId     String
+  alert       Alert    @relation(fields: [alertId], references: [id], onDelete: Cascade)
+  source      String
+  label       String
+  value       String
+  weight      Decimal  @db.Decimal(5, 2)
+  createdAt   DateTime @default(now())
+
+  @@index([alertId])
+}
+
+model Case {
+  id            String         @id @default(uuid())
+  caseNumber    String         @unique
+  title         String
+  status        CaseStatus      @default(OPEN)
+  priority      Severity
+  alertId       String          @unique
+  alert         Alert           @relation(fields: [alertId], references: [id], onDelete: Cascade)
+  assignments   Assignment[]
+  escalations   Escalation[]
+  notes         CaseNote[]
+  timeline      Timeline[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([status, priority])
+}
+
+model Assignment {
+  id            String           @id @default(uuid())
+  caseId        String
+  case          Case             @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  assignedToId  String
+  assignedTo    User             @relation("AssignedTo", fields: [assignedToId], references: [id])
+  assignedById  String?
+  assignedBy    User?            @relation("AssignedBy", fields: [assignedById], references: [id], onDelete: SetNull)
+  status        AssignmentStatus @default(ASSIGNED)
+  assignedAt    DateTime         @default(now())
+  acceptedAt    DateTime?
+
+  @@index([assignedToId, status])
+  @@index([caseId])
+}
+
+model Escalation {
+  id          String   @id @default(uuid())
+  caseId      String
+  case        Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  reason      String
+  fromTeam    String
+  toTeam      String
+  createdAt   DateTime @default(now())
+
+  @@index([caseId])
+}
+
+model CaseNote {
+  id          String   @id @default(uuid())
+  caseId      String
+  case        Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+  body        String
+  createdAt   DateTime @default(now())
+
+  @@index([caseId, createdAt])
+}
+
+model Timeline {
+  id          String   @id @default(uuid())
+  caseId      String
+  case        Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  event       String
+  description String
+  createdAt   DateTime @default(now())
+
+  @@index([caseId, createdAt])
+}
+
+model Notification {
+  id          String             @id @default(uuid())
+  userId      String
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  body        String
+  status      NotificationStatus @default(UNREAD)
+  createdAt   DateTime           @default(now())
+
+  @@index([userId, status])
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  actorId      String?
+  actor        User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action       String
+  resource     String
+  oldValue     Json?
+  newValue     Json?
+  ipAddress    String?
+  createdAt    DateTime @default(now())
+
+  @@index([actorId, createdAt])
+  @@index([resource, createdAt])
+}
+
+model Analytics {
+  id              String             @id @default(uuid())
+  metric          String
+  value           Decimal            @db.Decimal(14, 2)
+  trend           Decimal            @db.Decimal(7, 2)
+  providerId      String?
+  provider        Provider?          @relation(fields: [providerId], references: [id], onDelete: SetNull)
+  areaId          String?
+  area            Area?              @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  snapshotId      String?
+  snapshot        LiquiditySnapshot? @relation(fields: [snapshotId], references: [id], onDelete: SetNull)
+  recordedAt      DateTime           @default(now())
+
+  @@index([metric, recordedAt])
+  @@index([providerId, metric])
+  @@index([areaId, metric])
+}
