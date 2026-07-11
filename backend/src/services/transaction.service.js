@@ -48,8 +48,8 @@ const createTransaction = async ({ type, amount, transactionPhone, providerId, a
     throw new ApiError(409, "Provider has insufficient e-money balance for cash in");
   }
 
-  if (type === "CASH_OUT" && Number(agent.physicalCash.balance) < Number(amount)) {
-    throw new ApiError(409, "Agent has insufficient physical cash for cash out");
+  if (type === "CASH_OUT" && Number(agent.physicalCash.balance) <= Number(amount)) {
+    throw new ApiError(409, "Cash out amount must be less than agent physical cash");
   }
 
   const result = await transactionRepository.createTransactionWorkflow({

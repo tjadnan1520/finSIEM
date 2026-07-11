@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const ApiError = require("../utils/ApiError");
 
 const listTransactions = () => {
   return prisma.transaction.findMany({
@@ -10,6 +11,33 @@ const listTransactions = () => {
 
 const createTransactionWorkflow = async ({ type, amount, transactionPhone, provider, agent, userId }) => {
   return prisma.$transaction(async (tx) => {
+    const amountValue = Number(amount);
+    const [providerBalance, cash] = await Promise.all([
+      tx.providerBalance.findFirst({
+        where: { providerId: provider.id },
+        orderBy: { lastSyncedAt: "desc" }
+      }),
+      tx.physicalCash.findUnique({
+        where: { agentId: agent.id }
+      })
+    ]);
+
+    if (!providerBalance) {
+      throw new ApiError(409, "Provider does not have an initialized balance");
+    }
+
+    if (!cash) {
+      throw new ApiError(409, "Agent physical cash is not initialized");
+    }
+
+    if (type === "CASH_IN" && Number(providerBalance.balance) < amountValue) {
+      throw new ApiError(409, "Provider has insufficient e-money balance for cash in");
+    }
+
+    if (type === "CASH_OUT" && Number(cash.balance) <= amountValue) {
+      throw new ApiError(409, "Cash out amount must be less than agent physical cash");
+    }
+
     const transaction = await tx.transaction.create({
       data: {
         reference: `TXN-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
@@ -24,11 +52,10 @@ const createTransactionWorkflow = async ({ type, amount, transactionPhone, provi
       include: { provider: true, agent: true, area: true }
     });
 
-    const providerBalance = provider.balances[0];
     const currentProviderBalance = Number(providerBalance.balance);
     const nextProviderBalance = type === "CASH_IN"
-      ? currentProviderBalance - Number(amount)
-      : currentProviderBalance + Number(amount);
+      ? currentProviderBalance - amountValue
+      : currentProviderBalance + amountValue;
 
     await tx.providerBalance.create({
       data: {
@@ -39,10 +66,9 @@ const createTransactionWorkflow = async ({ type, amount, transactionPhone, provi
       }
     });
 
-    const cash = agent.physicalCash;
     const nextCashBalance = type === "CASH_IN"
-      ? Number(cash.balance) + Number(amount)
-      : Number(cash.balance) - Number(amount);
+      ? Number(cash.balance) + amountValue
+      : Number(cash.balance) - amountValue;
 
     await tx.physicalCash.update({
       where: { agentId: agent.id },
@@ -79,13 +105,12 @@ const createTransactionWorkflow = async ({ type, amount, transactionPhone, provi
         snapshotId: snapshot.id,
         horizonMinutes: minutes,
         expectedLiquidity: Math.max(0, liquidityScore - (minutes / 30) * 4),
-        expectedDemand: Number(amount) * (minutes / 30),
+        expectedDemand: amountValue * (minutes / 30),
         projectedShortage: Math.max(0, Number(providerBalance.minimumTarget) - nextProviderBalance),
         confidence: Math.max(55, 94 - (minutes / 30) * 6)
       }))
     });
 
-    const amountValue = Number(amount);
     const alertNeeded = amountValue >= 50000 && (liquidityScore < 65 || type === "CASH_OUT");
     let alert = null;
 
