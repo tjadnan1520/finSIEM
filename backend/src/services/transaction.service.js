@@ -10,9 +10,9 @@ const toDto = (transaction) => ({
   type: transaction.type,
   status: transaction.status,
   amount: Number(transaction.amount),
+  transactionPhone: transaction.transactionPhone,
   provider: transaction.provider.name,
   agent: transaction.agent.name,
-  agentPhone: transaction.agent.phone,
   area: transaction.area.name,
   createdAt: transaction.createdAt
 });
@@ -22,7 +22,7 @@ const listTransactions = async () => {
   return transactions.map(toDto);
 };
 
-const createTransaction = async ({ type, amount, providerId, agentId, userId }) => {
+const createTransaction = async ({ type, amount, transactionPhone, providerId, agentId, userId }) => {
   const [provider, agent] = await Promise.all([
     providerRepository.findProvider(providerId),
     agentRepository.findAgent(agentId)
@@ -44,23 +44,23 @@ const createTransaction = async ({ type, amount, providerId, agentId, userId }) 
     throw new ApiError(409, "Agent physical cash is not initialized");
   }
 
-  if (type === "CASH_IN" && Number(agent.physicalCash.balance) < Number(amount)) {
-    throw new ApiError(409, "Agent has insufficient physical cash for cash in");
+  if (type === "CASH_IN" && Number(provider.balances[0].balance) < Number(amount)) {
+    throw new ApiError(409, "Provider has insufficient e-money balance for cash in");
   }
 
-  if (type === "CASH_OUT" && Number(provider.balances[0].balance) < Number(amount)) {
-    throw new ApiError(409, "Provider has insufficient balance for cash out");
+  if (type === "CASH_OUT" && Number(agent.physicalCash.balance) < Number(amount)) {
+    throw new ApiError(409, "Agent has insufficient physical cash for cash out");
   }
 
   const result = await transactionRepository.createTransactionWorkflow({
     type,
     amount,
+    transactionPhone,
     provider,
     agent,
     userId
   });
   dashboardService.invalidateDashboardCache();
-  dashboardService.warmDashboardCache().catch(() => {});
 
   return {
     transaction: toDto(result.transaction),

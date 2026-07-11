@@ -29,12 +29,12 @@
   font-size: 14px;
 }
 
-.recent-table__agent-phone,
+.recent-table__transaction-phone,
 .recent-table td small {
   display: block;
 }
 
-.recent-table__agent-phone {
+.recent-table__transaction-phone {
   font-weight: 800;
 }
 

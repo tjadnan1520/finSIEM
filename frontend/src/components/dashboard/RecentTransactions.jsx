@@ -17,7 +17,7 @@ const RecentTransactions = ({ transactions = [] }) => (
             <th>Reference</th>
             <th>Type</th>
             <th>Provider</th>
-            <th>Agent</th>
+            <th>Number</th>
             <th>Amount</th>
             <th>Created</th>
           </tr>
@@ -29,7 +29,7 @@ const RecentTransactions = ({ transactions = [] }) => (
               <td><span className="status-pill">{transaction.type.replace("_", " ")}</span></td>
               <td>{transaction.provider}</td>
               <td>
-                <span className="recent-table__agent-phone">{transaction.agentPhone || "-"}</span>
+                <span className="recent-table__transaction-phone">{transaction.transactionPhone || "-"}</span>
                 <small>{transaction.agent}</small>
               </td>
               <td>{formatCurrency(transaction.amount)}</td>

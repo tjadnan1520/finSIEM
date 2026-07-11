@@ -33,9 +33,9 @@ const loadDashboard = async (role) => {
     reference: transaction.reference,
     type: transaction.type,
     amount: toNumber(transaction.amount),
+    transactionPhone: transaction.transactionPhone,
     provider: transaction.provider.name,
     agent: transaction.agent.name,
-    agentPhone: transaction.agent.phone,
     area: transaction.area.name,
     status: transaction.status,
     createdAt: transaction.createdAt

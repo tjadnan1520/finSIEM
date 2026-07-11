@@ -108,9 +108,9 @@ const createReferenceData = async () => {
 
   await prisma.physicalCash.createMany({
     data: [
-      { agentId: agents.dhanmondi.id, areaId: areas.dhanmondi.id, balance: 425000, minimumTarget: 180000 },
-      { agentId: agents.uttara.id, areaId: areas.uttara.id, balance: 260000, minimumTarget: 150000 },
-      { agentId: agents.sylhet.id, areaId: areas.sylhet.id, balance: 95000, minimumTarget: 120000 }
+      { agentId: agents.dhanmondi.id, areaId: areas.dhanmondi.id, balance: 50000, minimumTarget: 25000 },
+      { agentId: agents.uttara.id, areaId: areas.uttara.id, balance: 45000, minimumTarget: 25000 },
+      { agentId: agents.sylhet.id, areaId: areas.sylhet.id, balance: 40000, minimumTarget: 25000 }
     ]
   });
 
@@ -122,9 +122,9 @@ const createReferenceData = async () => {
 
   await prisma.providerBalance.createMany({
     data: [
-      { providerId: providers.bkash.id, balance: 1180000, minimumTarget: 500000, feedStatus: "CURRENT" },
-      { providerId: providers.nagad.id, balance: 390000, minimumTarget: 450000, feedStatus: "CURRENT" },
-      { providerId: providers.rocket.id, balance: 215000, minimumTarget: 300000, feedStatus: "DELAYED" }
+      { providerId: providers.bkash.id, balance: 145000, minimumTarget: 100000, feedStatus: "CURRENT" },
+      { providerId: providers.nagad.id, balance: 130000, minimumTarget: 100000, feedStatus: "CURRENT" },
+      { providerId: providers.rocket.id, balance: 115000, minimumTarget: 100000, feedStatus: "DELAYED" }
     ]
   });
 
@@ -133,17 +133,17 @@ const createReferenceData = async () => {
 
 const createOperationalData = async ({ users, areas, agents, providers }) => {
   const transactions = [
-    ["TXN-DEMO-1001", "CASH_IN", 75000, providers.bkash.id, agents.dhanmondi.id, areas.dhanmondi.id],
-    ["TXN-DEMO-1002", "CASH_OUT", 55000, providers.nagad.id, agents.uttara.id, areas.uttara.id],
-    ["TXN-DEMO-1003", "CASH_OUT", 82000, providers.rocket.id, agents.sylhet.id, areas.sylhet.id],
-    ["TXN-DEMO-1004", "CASH_IN", 41000, providers.bkash.id, agents.uttara.id, areas.uttara.id],
-    ["TXN-DEMO-1005", "CASH_OUT", 30000, providers.nagad.id, agents.dhanmondi.id, areas.dhanmondi.id],
-    ["TXN-DEMO-1006", "CASH_OUT", 82000, providers.rocket.id, agents.sylhet.id, areas.sylhet.id]
+    ["TXN-DEMO-1001", "CASH_IN", 12000, "01713001001", providers.bkash.id, agents.dhanmondi.id, areas.dhanmondi.id],
+    ["TXN-DEMO-1002", "CASH_OUT", 9000, "01814002002", providers.nagad.id, agents.uttara.id, areas.uttara.id],
+    ["TXN-DEMO-1003", "CASH_OUT", 11000, "01915003003", providers.rocket.id, agents.sylhet.id, areas.sylhet.id],
+    ["TXN-DEMO-1004", "CASH_IN", 8000, "01616004004", providers.bkash.id, agents.uttara.id, areas.uttara.id],
+    ["TXN-DEMO-1005", "CASH_OUT", 7000, "01517005005", providers.nagad.id, agents.dhanmondi.id, areas.dhanmondi.id],
+    ["TXN-DEMO-1006", "CASH_OUT", 11000, "01318006006", providers.rocket.id, agents.sylhet.id, areas.sylhet.id]
   ];
 
-  for (const [reference, type, amount, providerId, agentId, areaId] of transactions) {
+  for (const [reference, type, amount, transactionPhone, providerId, agentId, areaId] of transactions) {
     await prisma.transaction.create({
-      data: { reference, type, amount, providerId, agentId, areaId, createdById: users.agent.id }
+      data: { reference, type, amount, transactionPhone, providerId, agentId, areaId, createdById: users.agent.id }
     });
   }
 
@@ -154,8 +154,8 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
       providerBalanceRatio: 84,
       timeToShortage: 90,
       liquidityScore: 82.8,
-      totalPhysicalCash: 780000,
-      totalProviderBalance: 1785000
+      totalPhysicalCash: 135000,
+      totalProviderBalance: 390000
     }
   });
 
@@ -166,8 +166,8 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
       providerBalanceRatio: 43,
       timeToShortage: 48,
       liquidityScore: 48.4,
-      totalPhysicalCash: 780000,
-      totalProviderBalance: 1785000
+      totalPhysicalCash: 135000,
+      totalProviderBalance: 390000
     }
   });
 
@@ -178,8 +178,8 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
       providerBalanceRatio: 24,
       timeToShortage: 18,
       liquidityScore: 26,
-      totalPhysicalCash: 780000,
-      totalProviderBalance: 1785000
+      totalPhysicalCash: 135000,
+      totalProviderBalance: 390000
     }
   });
 
@@ -190,8 +190,8 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
         snapshotId: snapshot.id,
         horizonMinutes,
         expectedLiquidity: Math.max(5, Number(snapshot.liquidityScore) - horizonMinutes / 10),
-        expectedDemand: horizonMinutes * 1500,
-        projectedShortage: snapshot.id === criticalSnapshot.id ? horizonMinutes * 3200 : horizonMinutes * 400,
+        expectedDemand: horizonMinutes * 250,
+        projectedShortage: snapshot.id === criticalSnapshot.id ? horizonMinutes * 700 : horizonMinutes * 150,
         confidence: snapshot.id === criticalSnapshot.id ? 58 : 84
       }))
     });
@@ -233,7 +233,7 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
       evidence: {
         create: [
           { source: "Liquidity Engine", label: "Liquidity Score", value: "48.4", weight: 0.4 },
-          { source: "Provider Balance", label: "Balance vs Target", value: "390000 / 450000", weight: 0.3 },
+          { source: "Provider Balance", label: "Balance vs Target", value: "130000 / 100000", weight: 0.3 },
           { source: "Forecast Engine", label: "One Hour Outlook", value: "Projected pressure remains elevated", weight: 0.3 }
         ]
       }
@@ -252,7 +252,7 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
         create: [
           { source: "Liquidity Engine", label: "Liquidity Score", value: "26.0", weight: 0.4 },
           { source: "Confidence Engine", label: "Feed Status", value: "DELAYED", weight: 0.35 },
-          { source: "Risk Engine", label: "Repeated Amount Pattern", value: "82000 repeated", weight: 0.25 }
+          { source: "Risk Engine", label: "Repeated Amount Pattern", value: "11000 repeated", weight: 0.25 }
         ]
       }
     }

@@ -8,7 +8,7 @@ const TransactionForm = ({ initialType = "CASH_IN", onCreated }) => {
   const [type, setType] = useState(initialType);
   const [providers, setProviders] = useState([]);
   const [agents, setAgents] = useState([]);
-  const [form, setForm] = useState({ providerId: "", agentId: "", amount: "" });
+  const [form, setForm] = useState({ providerId: "", agentId: "", transactionPhone: "", amount: "" });
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -39,10 +39,11 @@ const TransactionForm = ({ initialType = "CASH_IN", onCreated }) => {
         type,
         providerId: form.providerId,
         agentId: form.agentId,
+        transactionPhone: form.transactionPhone.trim(),
         amount: Number(form.amount)
       });
       setMessage("Transaction processed successfully.");
-      setForm((current) => ({ ...current, amount: "" }));
+      setForm((current) => ({ ...current, transactionPhone: "", amount: "" }));
       onCreated?.();
     } catch (error) {
       setMessage(error.message);
@@ -86,6 +87,17 @@ const TransactionForm = ({ initialType = "CASH_IN", onCreated }) => {
           </select>
         </label>
         <label>
+          Transaction Number
+          <input
+            type="tel"
+            inputMode="tel"
+            placeholder="01XXXXXXXXX"
+            value={form.transactionPhone}
+            onChange={(event) => setForm({ ...form, transactionPhone: event.target.value })}
+            required
+          />
+        </label>
+        <label>
           Amount
           <input
             type="number"
@@ -100,7 +112,7 @@ const TransactionForm = ({ initialType = "CASH_IN", onCreated }) => {
 
       {message && <p className="transaction-form__message">{message}</p>}
 
-      <button type="submit" disabled={saving || !form.providerId || !form.agentId}>
+      <button type="submit" disabled={saving || !form.providerId || !form.agentId || !form.transactionPhone}>
         {saving ? "Processing" : "Submit Transaction"}
       </button>
     </form>

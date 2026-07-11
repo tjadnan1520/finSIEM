@@ -1,31 +1,18 @@
-◇ injected env (7) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+◇ injected env (7) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
 Backend listening on http://localhost:5001
-[0mPOST /api/auth/login [32m200[0m 1730.296 ms - 506[0m
-[0mGET /api/dashboard [32m200[0m 1093.735 ms - 3284[0m
-[0mGET /api/dashboard [32m200[0m 1.192 ms - 3284[0m
-[0mGET /api/providers [32m200[0m 1101.590 ms - 660[0m
-[0mGET /api/agents [32m200[0m 1449.780 ms - 722[0m
-[0mPOST /api/transactions [32m201[0m 5967.283 ms - 381[0m
-[0mPOST /api/transactions [32m201[0m 6909.665 ms - 383[0m
-[0mPOST /api/auth/login [32m200[0m 2007.902 ms - 506[0m
-[0mGET /api/auth/me [32m200[0m 1.247 ms - 247[0m
-[0mGET /api/dashboard [32m200[0m 1.050 ms - 3293[0m
-[0mPOST /api/auth/login [32m200[0m 1731.477 ms - 506[0m
-[0mGET /api/auth/me [32m200[0m 1197.225 ms - 247[0m
-[0mGET /api/dashboard [32m200[0m 3253.545 ms - 3293[0m
-[0mGET /api/auth/me [36m304[0m 0.962 ms - -[0m
-[0mPOST /api/transactions [33m422[0m 2.535 ms - 881[0m
-[0mGET /api/providers [32m200[0m 1144.754 ms - 660[0m
-[0mGET /api/agents [32m200[0m 1447.773 ms - 722[0m
-[0mGET /api/transactions [32m200[0m 2088.319 ms - 3189[0m
-[0mPOST /api/auth/login [32m200[0m 1754.960 ms - 506[0m
-[0mGET /api/auth/me [32m200[0m 0.943 ms - 247[0m
-[0mGET /api/dashboard [32m200[0m 2526.012 ms - 3293[0m
-[0mGET /api/auth/me [36m304[0m 0.915 ms - -[0m
-[0mGET /api/providers [32m200[0m 1554.486 ms - 660[0m
-[0mGET /api/agents [32m200[0m 2209.826 ms - 722[0m
-[0mGET /api/transactions [32m200[0m 3064.764 ms - 3189[0m
-[0mPOST /api/transactions [32m201[0m 10983.195 ms - 381[0m
-[0mGET /api/transactions [32m200[0m 9090.564 ms - 3453[0m
-[0mPOST /api/transactions [32m201[0m 13097.050 ms - 382[0m
+[0mPOST /api/auth/login [32m200[0m 1737.868 ms - 506[0m
+[0mGET /api/providers [32m200[0m 2357.796 ms - 659[0m
+[0mGET /api/agents [32m200[0m 1406.899 ms - 717[0m
+[0mPOST /api/transactions [32m201[0m 6173.307 ms - 384[0m
+[0mPOST /api/transactions [32m201[0m 5853.330 ms - 385[0m
+[0mPOST /api/auth/login [32m200[0m 2168.987 ms - 506[0m
+[0mGET /api/auth/me [32m200[0m 1.213 ms - 247[0m
+[0mGET /api/dashboard [32m200[0m 1995.963 ms - 4058[0m
+[0mGET /api/auth/me [36m304[0m 1.815 ms - -[0m
+[0mGET /api/providers [32m200[0m 1156.552 ms - 659[0m
+[0mGET /api/agents [32m200[0m 1446.034 ms - 717[0m
+[0mGET /api/transactions [32m200[0m 2290.927 ms - 3221[0m
+[0mPOST /api/transactions [32m201[0m 7122.552 ms - 384[0m
+[0mGET /api/transactions [32m200[0m 3476.629 ms - 3488[0m
+[0mPOST /api/transactions [32m201[0m 10626.275 ms - 385[0m
 [0mGET /api/transactions [0m-[0m - ms - -[0m

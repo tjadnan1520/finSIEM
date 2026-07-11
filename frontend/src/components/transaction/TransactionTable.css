@@ -26,12 +26,12 @@
   text-transform: uppercase;
 }
 
-.transaction-table__agent-phone,
+.transaction-table__transaction-phone,
 .transaction-table td small {
   display: block;
 }
 
-.transaction-table__agent-phone {
+.transaction-table__transaction-phone {
   font-weight: 800;
 }
 

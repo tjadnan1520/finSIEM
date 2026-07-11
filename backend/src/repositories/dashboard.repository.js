@@ -38,6 +38,7 @@ const getDashboardData = async ({ includeCases = false } = {}) => {
         reference: true,
         type: true,
         amount: true,
+        transactionPhone: true,
         status: true,
         createdAt: true,
         provider: { select: { name: true } },

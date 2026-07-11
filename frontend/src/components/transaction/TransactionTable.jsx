@@ -17,7 +17,7 @@ const TransactionTable = ({ transactions = [] }) => (
             <th>Reference</th>
             <th>Type</th>
             <th>Provider</th>
-            <th>Agent</th>
+            <th>Number</th>
             <th>Area</th>
             <th>Amount</th>
             <th>Status</th>
@@ -31,7 +31,7 @@ const TransactionTable = ({ transactions = [] }) => (
               <td>{transaction.type.replace("_", " ")}</td>
               <td>{transaction.provider}</td>
               <td>
-                <span className="transaction-table__agent-phone">{transaction.agentPhone || "-"}</span>
+                <span className="transaction-table__transaction-phone">{transaction.transactionPhone || "-"}</span>
                 <small>{transaction.agent}</small>
               </td>
               <td>{transaction.area}</td>

@@ -9,6 +9,10 @@ const router = express.Router();
 const transactionValidation = [
   body("type").isIn(["CASH_IN", "CASH_OUT"]).withMessage("Transaction type must be CASH_IN or CASH_OUT"),
   body("amount").isFloat({ min: 1 }).withMessage("Amount must be greater than zero"),
+  body("transactionPhone")
+    .trim()
+    .matches(/^(\+?88)?01[3-9]\d{8}$/)
+    .withMessage("A valid Bangladeshi transaction phone number is required"),
   body("providerId").isUUID().withMessage("A valid provider ID is required"),
   body("agentId").isUUID().withMessage("A valid agent ID is required")
 ];

@@ -2,19 +2,20 @@ const prisma = require("../config/prisma");
 
 const listTransactions = () => {
   return prisma.transaction.findMany({
-    include: { provider: true, agent: { include: { area: true } }, area: true },
+      include: { provider: true, agent: { include: { area: true } }, area: true },
     orderBy: { createdAt: "desc" },
     take: 50
   });
 };
 
-const createTransactionWorkflow = async ({ type, amount, provider, agent, userId }) => {
+const createTransactionWorkflow = async ({ type, amount, transactionPhone, provider, agent, userId }) => {
   return prisma.$transaction(async (tx) => {
     const transaction = await tx.transaction.create({
       data: {
         reference: `TXN-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
         type,
         amount,
+        transactionPhone,
         providerId: provider.id,
         agentId: agent.id,
         areaId: agent.areaId,
@@ -26,8 +27,8 @@ const createTransactionWorkflow = async ({ type, amount, provider, agent, userId
     const providerBalance = provider.balances[0];
     const currentProviderBalance = Number(providerBalance.balance);
     const nextProviderBalance = type === "CASH_IN"
-      ? currentProviderBalance + Number(amount)
-      : currentProviderBalance - Number(amount);
+      ? currentProviderBalance - Number(amount)
+      : currentProviderBalance + Number(amount);
 
     await tx.providerBalance.create({
       data: {
@@ -40,8 +41,8 @@ const createTransactionWorkflow = async ({ type, amount, provider, agent, userId
 
     const cash = agent.physicalCash;
     const nextCashBalance = type === "CASH_IN"
-      ? Number(cash.balance) - Number(amount)
-      : Number(cash.balance) + Number(amount);
+      ? Number(cash.balance) + Number(amount)
+      : Number(cash.balance) - Number(amount);
 
     await tx.physicalCash.update({
       where: { agentId: agent.id },
@@ -84,7 +85,8 @@ const createTransactionWorkflow = async ({ type, amount, provider, agent, userId
       }))
     });
 
-    const alertNeeded = liquidityScore < 65 || (type === "CASH_OUT" && Number(amount) >= 50000);
+    const amountValue = Number(amount);
+    const alertNeeded = amountValue >= 50000 && (liquidityScore < 65 || type === "CASH_OUT");
     let alert = null;
 
     if (alertNeeded) {
@@ -157,7 +159,7 @@ const createTransactionWorkflow = async ({ type, amount, provider, agent, userId
         actorId: userId,
         action: "TRANSACTION_CREATED",
         resource: "Transaction",
-        newValue: { transactionId: transaction.id, type, amount: Number(amount), alertId: alert?.id || null }
+        newValue: { transactionId: transaction.id, type, amount: Number(amount), transactionPhone, alertId: alert?.id || null }
       }
     });
 

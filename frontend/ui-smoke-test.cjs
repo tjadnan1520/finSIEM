@@ -97,6 +97,20 @@ const run = async () => {
     });
   };
 
+  const setTransactionPhone = async (phone) => {
+    await send("Runtime.evaluate", {
+      expression: `
+        (() => {
+          const input = document.querySelector('input[type="tel"]');
+          const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+          setter.call(input, '${phone}');
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        })()
+      `
+    });
+  };
+
   await send("Runtime.enable");
   await send("Page.enable");
   await send("Page.navigate", { url: appUrl });
@@ -137,6 +151,7 @@ const run = async () => {
   await send("Page.navigate", { url: "http://127.0.0.1:5181/transactions" });
   await waitForText("Cash Movement", "Transactions page");
   await waitForText("Nadia Rahman", "Transaction form options");
+  await setTransactionPhone("01711112222");
   await setAmount(100);
   await delay(300);
   await send("Runtime.evaluate", { expression: "document.querySelector('button[type=\"submit\"]').click()" });
@@ -148,6 +163,7 @@ const run = async () => {
   await send("Runtime.evaluate", {
     expression: "[...document.querySelectorAll('button')].find((button) => button.textContent.trim() === 'Cash Out').click()"
   });
+  await setTransactionPhone("01811112222");
   await setAmount(100);
   await delay(300);
   await send("Runtime.evaluate", { expression: "document.querySelector('button[type=\"submit\"]').click()" });

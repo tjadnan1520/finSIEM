@@ -163,6 +163,7 @@ model Transaction {
   type        TransactionType
   status      TransactionStatus @default(COMPLETED)
   amount      Decimal           @db.Decimal(14, 2)
+  transactionPhone String
   providerId  String
   provider    Provider          @relation(fields: [providerId], references: [id])
   agentId     String
@@ -177,6 +178,7 @@ model Transaction {
   @@index([providerId, createdAt])
   @@index([agentId, createdAt])
   @@index([areaId, createdAt])
+  @@index([transactionPhone])
 }
 
 model LiquiditySnapshot {
