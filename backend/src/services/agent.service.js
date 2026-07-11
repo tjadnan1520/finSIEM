@@ -1,6 +1,6 @@
 const agentRepository = require("../repositories/agent.repository");
 
-const listAgents = async () => {
+const listAgents = async (role) => {
   const agents = await agentRepository.listAgents();
   return agents.map((agent) => ({
     id: agent.id,
@@ -9,8 +9,10 @@ const listAgents = async () => {
     phone: agent.phone,
     area: agent.area.name,
     areaId: agent.areaId,
-    physicalCash: agent.physicalCash ? Number(agent.physicalCash.balance) : 0,
-    minimumTarget: agent.physicalCash ? Number(agent.physicalCash.minimumTarget) : 0
+    ...(role === "Operator" ? {} : {
+      physicalCash: agent.physicalCash ? Number(agent.physicalCash.balance) : 0,
+      minimumTarget: agent.physicalCash ? Number(agent.physicalCash.minimumTarget) : 0
+    })
   }));
 };
 

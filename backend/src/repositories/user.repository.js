@@ -24,4 +24,15 @@ const listOperators = () => {
   });
 };
 
-module.exports = { findByEmail, findById, listOperators };
+const listFieldOfficers = () => {
+  return prisma.user.findMany({
+    where: { role: { name: "Agent" }, isActive: true },
+    include: {
+      role: true,
+      agent: { include: { area: true } }
+    },
+    orderBy: { name: "asc" }
+  });
+};
+
+module.exports = { findByEmail, findById, listOperators, listFieldOfficers };
