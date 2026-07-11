@@ -44,6 +44,7 @@ const listCases = async (user) => {
       id: caseRecord.agent.id,
       name: caseRecord.agent.name,
       phone: caseRecord.agent.phone,
+      areaId: caseRecord.agent.areaId,
       area: caseRecord.agent.area.name,
       region: caseRecord.agent.area.region
     } : null,
@@ -139,12 +140,16 @@ const transferCase = async ({ caseId, assignedToId, assignedById }) => {
       throw new ApiError(404, "Case was not found");
     }
 
+    if (caseRecord.status === "RESOLVED" || caseRecord.status === "CLOSED") {
+      throw new ApiError(409, "Case is already resolved");
+    }
+
     if (caseRecord.agent && fieldOfficer.fieldOfficer?.areaId !== caseRecord.agent.areaId) {
-      throw new ApiError(409, "Choose a field officer from the same area as the case agent");
+      throw new ApiError(409, "Choose a field officer from this case area");
     }
 
     if (caseRecord.alert.providerId && fieldOfficer.fieldOfficer?.providerId !== caseRecord.alert.providerId) {
-      throw new ApiError(409, "Choose a field officer for the same provider as this case");
+      throw new ApiError(409, "Choose a field officer for this case provider");
     }
 
     if (assignedById) {

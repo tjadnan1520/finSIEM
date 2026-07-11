@@ -13,12 +13,15 @@ const CaseDetails = () => {
   const [fieldOfficers, setFieldOfficers] = useState([]);
   const [regionOptions, setRegionOptions] = useState([]);
   const [regionFilter, setRegionFilter] = useState("");
+  const [areaOptions, setAreaOptions] = useState([]);
+  const [areaFilter, setAreaFilter] = useState("");
   const [assignedToId, setAssignedToId] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const canTransfer = user?.role === "Operator" || user?.role === "Management";
+  const canTransfer = (user?.role === "Operator" || user?.role === "Management")
+    && !["RESOLVED", "CLOSED"].includes(caseRecord?.status);
   const canResolve = (user?.role === "Field Officer" || user?.role === "Agent")
     && caseRecord?.assignments?.some((assignment) => assignment.assignedToId === user.id)
     && !["RESOLVED", "CLOSED"].includes(caseRecord?.status);
@@ -28,31 +31,28 @@ const CaseDetails = () => {
       .then((loadedCase) => {
         setCaseRecord(loadedCase);
         setRegionFilter(loadedCase.agent?.area?.region || "");
+        setRegionOptions(loadedCase.agent?.area?.region ? [loadedCase.agent.area.region] : []);
+        setAreaFilter(loadedCase.agent?.area?.id || "");
+        setAreaOptions(loadedCase.agent?.area ? [loadedCase.agent.area] : []);
       })
       .catch((requestError) => setError(requestError.message));
   }, [id]);
 
   useEffect(() => {
-    if (!canTransfer) return;
+    if (!canTransfer || !caseRecord) return;
 
-    listFieldOfficers()
-      .then((officers) => {
-        const regions = [...new Set(officers.map((officer) => officer.region).filter(Boolean))].sort();
-        setRegionOptions(regions);
-      })
-      .catch((requestError) => setMessage(requestError.message));
-  }, [canTransfer]);
-
-  useEffect(() => {
-    if (!canTransfer) return;
-
-    listFieldOfficers({ caseId: id, region: regionFilter })
+    listFieldOfficers({
+      caseId: id,
+      areaId: areaFilter,
+      providerId: caseRecord.alert.provider?.id,
+      region: regionFilter
+    })
       .then((officers) => {
         setFieldOfficers(officers);
         setAssignedToId((current) => officers.some((officer) => officer.id === current) ? current : officers[0]?.id || "");
       })
       .catch((requestError) => setMessage(requestError.message));
-  }, [canTransfer, id, regionFilter]);
+  }, [areaFilter, canTransfer, caseRecord, id, regionFilter]);
 
   const handleTransfer = async (event) => {
     event.preventDefault();
@@ -122,11 +122,27 @@ const CaseDetails = () => {
             <h2>Transfer Case</h2>
             <form className="case-transfer" onSubmit={handleTransfer}>
               <label>
+                Provider
+                <select value={caseRecord.alert.provider?.id || ""} disabled>
+                  <option value={caseRecord.alert.provider?.id || ""}>
+                    {caseRecord.alert.provider?.name || "All Providers"}
+                  </option>
+                </select>
+              </label>
+              <label>
                 Region
                 <select value={regionFilter} onChange={(event) => setRegionFilter(event.target.value)}>
                   <option value="">All regions</option>
                   {regionOptions.map((region) => (
                     <option key={region} value={region}>{region}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Area
+                <select value={areaFilter} onChange={(event) => setAreaFilter(event.target.value)}>
+                  {areaOptions.map((area) => (
+                    <option key={area.id} value={area.id}>{area.name}</option>
                   ))}
                 </select>
               </label>
