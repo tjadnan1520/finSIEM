@@ -40,7 +40,7 @@ const createTransaction = async ({ type, amount, transactionPhone, providerId, a
     throw new ApiError(409, "Provider does not have an initialized balance");
   }
 
-  if (!agent.physicalCash) {
+  if (!agent.physicalCash && type === "CASH_IN") {
     throw new ApiError(409, "Agent physical cash is not initialized");
   }
 
@@ -48,8 +48,11 @@ const createTransaction = async ({ type, amount, transactionPhone, providerId, a
     throw new ApiError(409, "Provider has insufficient e-money balance for cash in");
   }
 
-  if (type === "CASH_OUT" && Number(agent.physicalCash.balance) <= Number(amount)) {
-    throw new ApiError(409, "Cash out amount must be less than agent physical cash");
+  if (type === "CASH_OUT") {
+    const totalPhysicalCash = await transactionRepository.getTotalPhysicalCash();
+    if (totalPhysicalCash <= Number(amount)) {
+      throw new ApiError(409, "Cash out amount must be less than total physical cash");
+    }
   }
 
   const result = await transactionRepository.createTransactionWorkflow({

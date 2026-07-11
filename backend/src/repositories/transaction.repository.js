@@ -9,24 +9,62 @@ const listTransactions = () => {
   });
 };
 
+const getTotalPhysicalCash = async () => {
+  const totalCash = await prisma.physicalCash.aggregate({ _sum: { balance: true } });
+  return Number(totalCash._sum.balance || 0);
+};
+
+const applyCashOutDeduction = async ({ tx, agentId, amountValue }) => {
+  let remaining = amountValue;
+  const cashRows = await tx.physicalCash.findMany({
+    orderBy: { balance: "desc" }
+  });
+
+  const selectedCash = cashRows.find((cash) => cash.agentId === agentId);
+  const orderedCashRows = [
+    ...(selectedCash ? [selectedCash] : []),
+    ...cashRows.filter((cash) => cash.agentId !== agentId)
+  ];
+
+  for (const cash of orderedCashRows) {
+    if (remaining <= 0) break;
+
+    const currentBalance = Number(cash.balance);
+    const deduction = Math.min(currentBalance, remaining);
+    if (deduction <= 0) continue;
+
+    await tx.physicalCash.update({
+      where: { agentId: cash.agentId },
+      data: { balance: currentBalance - deduction }
+    });
+
+    remaining -= deduction;
+  }
+
+  if (remaining > 0) {
+    throw new ApiError(409, "Cash out amount must be less than total physical cash");
+  }
+};
+
 const createTransactionWorkflow = async ({ type, amount, transactionPhone, provider, agent, userId }) => {
   return prisma.$transaction(async (tx) => {
     const amountValue = Number(amount);
-    const [providerBalance, cash] = await Promise.all([
+    const [providerBalance, cash, totalCashBefore] = await Promise.all([
       tx.providerBalance.findFirst({
         where: { providerId: provider.id },
         orderBy: { lastSyncedAt: "desc" }
       }),
       tx.physicalCash.findUnique({
         where: { agentId: agent.id }
-      })
+      }),
+      tx.physicalCash.aggregate({ _sum: { balance: true } })
     ]);
 
     if (!providerBalance) {
       throw new ApiError(409, "Provider does not have an initialized balance");
     }
 
-    if (!cash) {
+    if (!cash && type === "CASH_IN") {
       throw new ApiError(409, "Agent physical cash is not initialized");
     }
 
@@ -34,8 +72,8 @@ const createTransactionWorkflow = async ({ type, amount, transactionPhone, provi
       throw new ApiError(409, "Provider has insufficient e-money balance for cash in");
     }
 
-    if (type === "CASH_OUT" && Number(cash.balance) <= amountValue) {
-      throw new ApiError(409, "Cash out amount must be less than agent physical cash");
+    if (type === "CASH_OUT" && Number(totalCashBefore._sum.balance || 0) <= amountValue) {
+      throw new ApiError(409, "Cash out amount must be less than total physical cash");
     }
 
     const transaction = await tx.transaction.create({
@@ -66,14 +104,14 @@ const createTransactionWorkflow = async ({ type, amount, transactionPhone, provi
       }
     });
 
-    const nextCashBalance = type === "CASH_IN"
-      ? Number(cash.balance) + amountValue
-      : Number(cash.balance) - amountValue;
-
-    await tx.physicalCash.update({
-      where: { agentId: agent.id },
-      data: { balance: nextCashBalance }
-    });
+    if (type === "CASH_IN") {
+      await tx.physicalCash.update({
+        where: { agentId: agent.id },
+        data: { balance: Number(cash.balance) + amountValue }
+      });
+    } else {
+      await applyCashOutDeduction({ tx, agentId: agent.id, amountValue });
+    }
 
     const totalCash = await tx.physicalCash.aggregate({ _sum: { balance: true } });
     const latestBalances = await tx.providerBalance.findMany({
@@ -195,4 +233,4 @@ const createTransactionWorkflow = async ({ type, amount, transactionPhone, provi
   });
 };
 
-module.exports = { listTransactions, createTransactionWorkflow };
+module.exports = { getTotalPhysicalCash, listTransactions, createTransactionWorkflow };

@@ -59,3 +59,28 @@ Backend listening on http://localhost:5000
 ◇ injected env (9) from .env // tip: ⌘ enable debugging { debug: true }
 Backend listening on http://localhost:5000
 [0mGET /api/health [32m200[0m 3.859 ms - 151[0m
+[0mGET /api/auth/me [36m304[0m 1427.945 ms - -[0m
+[0mGET /api/dashboard [36m304[0m 1903.149 ms - -[0m
+[0mGET /api/providers [32m200[0m 1097.796 ms - 659[0m
+[0mGET /api/agents [32m200[0m 1480.690 ms - 722[0m
+[0mGET /api/transactions [36m304[0m 2110.711 ms - -[0m
+[0mPOST /api/transactions [33m409[0m 1637.403 ms - 429[0m
+[0mPOST /api/transactions [33m409[0m 1606.767 ms - 429[0m
+[0mGET /api/dashboard [36m304[0m 1780.095 ms - -[0m
+[0mGET /api/providers [36m304[0m 1134.838 ms - -[0m
+[0mGET /api/agents [36m304[0m 1435.323 ms - -[0m
+[0mGET /api/transactions [36m304[0m 2082.555 ms - -[0m
+[0mPOST /api/transactions [33m409[0m 2834.490 ms - 429[0m
+[0mGET /api/dashboard [36m304[0m 3133.951 ms - -[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+[32m[nodemon] restarting due to changes...[39m
+◇ injected env (9) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+Backend listening on http://localhost:5000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ override existing { override: true }
+Backend listening on http://localhost:5000
+[0mGET /api/health [32m200[0m 7.688 ms - 151[0m
