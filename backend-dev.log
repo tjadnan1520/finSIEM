@@ -6,3 +6,15 @@
 ◇ injected env (9) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
 Backend listening on http://localhost:5000
 [0mGET /api/health [32m200[0m 11.586 ms - 151[0m
+[0mPOST /api/auth/login [32m200[0m 4469.511 ms - 627[0m
+[0mPOST /api/auth/login [32m200[0m 4009.876 ms - 629[0m
+[0mPOST /api/auth/login [32m200[0m 2656.357 ms - 637[0m
+[0mPOST /api/auth/login [32m200[0m 2940.324 ms - 629[0m
+[0mGET /api/auth/me [32m200[0m 1864.702 ms - 414[0m
+[0mGET /api/dashboard [32m200[0m 5837.466 ms - 4693[0m
+[0mGET /api/cases [32m200[0m 4466.150 ms - 4388[0m
+[0mGET /api/cases/field-officers [32m200[0m 2183.969 ms - 6583[0m
+[0mGET /api/cases/bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95 [32m200[0m 5004.493 ms - 3050[0m
+[0mPOST /api/cases/bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95/transfer [33m409[0m 4097.849 ms - 589[0m
+[0mPOST /api/cases/bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95/transfer [33m409[0m 6961.894 ms - 589[0m
+[0mPOST /api/cases/bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95/transfer [33m409[0m 4413.188 ms - 589[0m
