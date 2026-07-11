@@ -1,18 +1,7 @@
-◇ injected env (7) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
-Backend listening on http://localhost:5001
-[0mPOST /api/auth/login [32m200[0m 1737.868 ms - 506[0m
-[0mGET /api/providers [32m200[0m 2357.796 ms - 659[0m
-[0mGET /api/agents [32m200[0m 1406.899 ms - 717[0m
-[0mPOST /api/transactions [32m201[0m 6173.307 ms - 384[0m
-[0mPOST /api/transactions [32m201[0m 5853.330 ms - 385[0m
-[0mPOST /api/auth/login [32m200[0m 2168.987 ms - 506[0m
-[0mGET /api/auth/me [32m200[0m 1.213 ms - 247[0m
-[0mGET /api/dashboard [32m200[0m 1995.963 ms - 4058[0m
-[0mGET /api/auth/me [36m304[0m 1.815 ms - -[0m
-[0mGET /api/providers [32m200[0m 1156.552 ms - 659[0m
-[0mGET /api/agents [32m200[0m 1446.034 ms - 717[0m
-[0mGET /api/transactions [32m200[0m 2290.927 ms - 3221[0m
-[0mPOST /api/transactions [32m201[0m 7122.552 ms - 384[0m
-[0mGET /api/transactions [32m200[0m 3476.629 ms - 3488[0m
-[0mPOST /api/transactions [32m201[0m 10626.275 ms - 385[0m
-[0mGET /api/transactions [0m-[0m - ms - -[0m
+[33m[nodemon] 3.1.14[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ enable debugging { debug: true }
+Backend listening on http://localhost:5000
