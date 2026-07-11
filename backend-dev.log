@@ -58,3 +58,4 @@ Backend listening on http://localhost:5000
 [32m[nodemon] starting `node src/server.js`[39m
 ◇ injected env (9) from .env // tip: ⌘ enable debugging { debug: true }
 Backend listening on http://localhost:5000
+[0mGET /api/health [32m200[0m 3.859 ms - 151[0m
