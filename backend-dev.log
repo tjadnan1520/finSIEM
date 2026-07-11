@@ -1,0 +1,46 @@
+◇ injected env (7) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+Backend listening on http://localhost:5001
+[0mGET /api/health [32m200[0m 5.679 ms - 151[0m
+[0mGET /api/health [32m200[0m 0.629 ms - 151[0m
+[0mPOST /api/auth/login [32m200[0m 3668.430 ms - 506[0m
+[0mGET /api/auth/me [32m200[0m 1452.731 ms - 247[0m
+[0mGET /api/dashboard [0m-[0m - ms - -[0m
+[0mPOST /api/auth/login [32m200[0m 1853.800 ms - 506[0m
+[0mGET /api/auth/me [32m200[0m 1510.400 ms - 247[0m
+[0mGET /api/dashboard [32m200[0m 4306.722 ms - 5625[0m
+[0mPOST /api/auth/login [32m200[0m 2046.716 ms - 506[0m
+[0mPOST /api/auth/login [32m200[0m 1949.606 ms - 528[0m
+[0mPOST /api/auth/login [32m200[0m 1944.511 ms - 529[0m
+[0mGET /api/dashboard [32m200[0m 4688.312 ms - 5625[0m
+[0mGET /api/dashboard [32m200[0m 4382.205 ms - 5628[0m
+[0mGET /api/dashboard [32m200[0m 4398.557 ms - 5630[0m
+[0mGET /api/providers [32m200[0m 2655.481 ms - 660[0m
+[0mGET /api/agents [32m200[0m 3475.064 ms - 722[0m
+[0mGET /api/transactions [32m200[0m 3990.166 ms - 1419[0m
+[0mGET /api/alerts [32m200[0m 3475.636 ms - 652[0m
+[0mGET /api/cases [32m200[0m 3986.849 ms - 569[0m
+[0mGET /api/analytics [32m200[0m 3273.153 ms - 1394[0m
+[0mGET /api/health [32m200[0m 0.477 ms - 151[0m
+[0mPOST /api/auth/login [32m200[0m 2411.435 ms - 506[0m
+[0mGET /api/auth/me [32m200[0m 1214.457 ms - 247[0m
+[0mGET /api/dashboard [32m200[0m 4443.570 ms - 5625[0m
+[0mPOST /api/auth/login [32m200[0m 2226.061 ms - 506[0m
+[0mGET /api/auth/me [32m200[0m 1525.243 ms - 247[0m
+[0mGET /api/dashboard [32m200[0m 4258.027 ms - 5625[0m
+[0mGET /api/providers [32m200[0m 3190.332 ms - 660[0m
+[0mGET /api/agents [32m200[0m 3597.918 ms - 722[0m
+[0mGET /api/transactions [32m200[0m 4417.050 ms - 1419[0m
+prisma:error 
+Invalid `tx.auditLog.create()` invocation in
+C:\Users\Hp\Desktop\Front_End\finSIEM\backend\src\repositories\transaction.repository.js:155:23
+
+  152   });
+  153 }
+  154 
+→ 155 await tx.auditLog.create(
+Transaction API error: Transaction not found. Transaction ID is invalid, refers to an old closed transaction Prisma doesn't have information about anymore, or was obtained before disconnecting.
+[0mPOST /api/transactions [31m500[0m 8327.060 ms - 2014[0m
+[0mPOST /api/transactions [31m500[0m 8755.331 ms - 1032[0m
+[0mGET /api/dashboard [36m304[0m 7503.804 ms - -[0m
+[0mGET /api/alerts/87eceb66-21bf-4d26-b234-98b7bc324de3 [32m200[0m 5514.733 ms - 3156[0m
+[0mGET /api/dashboard [36m304[0m 7495.661 ms - -[0m
