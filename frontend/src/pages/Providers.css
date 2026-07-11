@@ -1,0 +1,39 @@
+.providers-page {
+  display: grid;
+  gap: 22px;
+}
+
+.providers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.provider-card {
+  display: grid;
+  gap: 12px;
+  padding: 22px;
+}
+
+.provider-card strong,
+.provider-card span,
+.provider-card small {
+  display: block;
+}
+
+.provider-card span,
+.provider-card small {
+  color: var(--muted);
+}
+
+.provider-card p {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 850;
+}
+
+@media (max-width: 900px) {
+  .providers-grid {
+    grid-template-columns: 1fr;
+  }
+}

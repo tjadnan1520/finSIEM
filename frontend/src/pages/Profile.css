@@ -1,0 +1,29 @@
+.profile-page {
+  display: grid;
+  gap: 22px;
+}
+
+.profile-card {
+  width: min(100%, 620px);
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+}
+
+.profile-card img {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.profile-card span,
+.profile-card strong {
+  display: block;
+}
+
+.profile-card span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}

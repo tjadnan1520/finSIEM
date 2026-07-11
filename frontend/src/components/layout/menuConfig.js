@@ -1,0 +1,53 @@
+import {
+  AlertTriangle,
+  ArrowLeftRight,
+  BarChart3,
+  BriefcaseBusiness,
+  Building2,
+  Settings,
+  LayoutDashboard,
+  UserRound
+} from "lucide-react";
+
+export const menuByRole = {
+  "Field Officer": [
+    { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+    { label: "Alerts", path: "/alerts", icon: AlertTriangle },
+    { label: "Cases", path: "/cases", icon: BriefcaseBusiness },
+    { label: "Profile", path: "/profile", icon: UserRound }
+  ],
+  Agent: [
+    { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+    { label: "Transactions", path: "/transactions", icon: ArrowLeftRight },
+    { label: "Alerts", path: "/alerts", icon: AlertTriangle },
+    { label: "Cases", path: "/cases", icon: BriefcaseBusiness },
+    { label: "Profile", path: "/profile", icon: UserRound }
+  ],
+  Operator: [
+    { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+    { label: "Alerts", path: "/alerts", icon: AlertTriangle },
+    { label: "Cases", path: "/cases", icon: BriefcaseBusiness },
+    { label: "Transactions", path: "/transactions", icon: ArrowLeftRight },
+    { label: "Profile", path: "/profile", icon: UserRound }
+  ],
+  Management: [
+    { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+    { label: "Analytics", path: "/analytics", icon: BarChart3 },
+    { label: "Providers", path: "/providers", icon: Building2 },
+    { label: "Management", path: "/management", icon: Settings },
+    { label: "Reports", path: "/analytics", icon: BarChart3 },
+    { label: "Cases", path: "/cases", icon: BriefcaseBusiness },
+    { label: "Profile", path: "/profile", icon: UserRound }
+  ]
+};
+
+export const routeTitles = {
+  "/dashboard": "Dashboard",
+  "/transactions": "Transactions",
+  "/alerts": "Alerts",
+  "/cases": "Cases",
+  "/analytics": "Analytics",
+  "/providers": "Providers",
+  "/management": "Management",
+  "/profile": "Profile"
+};

@@ -1,0 +1,42 @@
+.detail-page {
+  display: grid;
+  gap: 22px;
+}
+
+.detail-page__grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 22px;
+}
+
+.detail-card {
+  padding: 22px;
+}
+
+.detail-card h2 {
+  margin: 0 0 14px;
+  font-size: 18px;
+}
+
+.detail-card p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.detail-row {
+  display: grid;
+  gap: 4px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-row span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .detail-page__grid {
+    grid-template-columns: 1fr;
+  }
+}

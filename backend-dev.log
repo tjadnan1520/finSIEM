@@ -1,0 +1,138 @@
+[33m[nodemon] 3.1.14[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+Backend listening on http://localhost:5000
+[0mGET /api/health [32m200[0m 11.586 ms - 151[0m
+[0mPOST /api/auth/login [32m200[0m 4469.511 ms - 627[0m
+[0mPOST /api/auth/login [32m200[0m 4009.876 ms - 629[0m
+[0mPOST /api/auth/login [32m200[0m 2656.357 ms - 637[0m
+[0mPOST /api/auth/login [32m200[0m 2940.324 ms - 629[0m
+[0mGET /api/auth/me [32m200[0m 1864.702 ms - 414[0m
+[0mGET /api/dashboard [32m200[0m 5837.466 ms - 4693[0m
+[0mGET /api/cases [32m200[0m 4466.150 ms - 4388[0m
+[0mGET /api/cases/field-officers [32m200[0m 2183.969 ms - 6583[0m
+[0mGET /api/cases/bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95 [32m200[0m 5004.493 ms - 3050[0m
+[0mPOST /api/cases/bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95/transfer [33m409[0m 4097.849 ms - 589[0m
+[0mPOST /api/cases/bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95/transfer [33m409[0m 6961.894 ms - 589[0m
+[0mPOST /api/cases/bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95/transfer [33m409[0m 4413.188 ms - 589[0m
+[0mPOST /api/auth/login [32m200[0m 2524.795 ms - 627[0m
+[0mGET /api/auth/me [32m200[0m 1991.954 ms - 412[0m
+[0mGET /api/dashboard [32m200[0m 5077.418 ms - 1781[0m
+[0mGET /api/health [32m200[0m 1.056 ms - 151[0m
+[0mPOST /api/auth/login [32m200[0m 2615.061 ms - 629[0m
+[0mPOST /api/auth/login [32m200[0m 2581.711 ms - 629[0m
+[0mGET /api/auth/me [32m200[0m 4111.030 ms - 414[0m
+[0mGET /api/dashboard [32m200[0m 7516.449 ms - 4693[0m
+[0mGET /api/cases [36m304[0m 4422.746 ms - -[0m
+[0mGET /api/cases/field-officers [36m304[0m 2697.804 ms - -[0m
+[0mGET /api/cases/bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95 [36m304[0m 5216.500 ms - -[0m
+[0mPOST /api/cases/bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95/transfer [33m409[0m 4629.426 ms - 589[0m
+[0mPOST /api/auth/login [32m200[0m 5440.395 ms - 561[0m
+[0mGET /api/auth/me [32m200[0m 2151.174 ms - 309[0m
+[0mGET /api/dashboard [32m200[0m 5930.750 ms - 378[0m
+[0mPOST /api/auth/login [32m200[0m 2697.446 ms - 629[0m
+[0mGET /api/cases/bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95 [32m200[0m 7897.850 ms - 3050[0m
+[0mGET /api/cases/field-officers?caseId=bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95 [32m200[0m 4782.692 ms - 375[0m
+[0mGET /api/cases/field-officers [32m200[0m 2984.819 ms - 6583[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Backend listening on http://localhost:5000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ enable debugging { debug: true }
+Backend listening on http://localhost:5000
+[0mGET /api/health [32m200[0m 2.167 ms - 151[0m
+[0mPOST /api/auth/login [32m200[0m 4602.452 ms - 561[0m
+[0mGET /api/auth/me [36m304[0m 1890.863 ms - -[0m
+[0mGET /api/dashboard [36m304[0m 5267.032 ms - -[0m
+[0mPOST /api/auth/login [32m200[0m 2923.588 ms - 629[0m
+[0mGET /api/auth/me [32m200[0m 2467.508 ms - 414[0m
+[0mGET /api/dashboard [32m200[0m 6149.944 ms - 4701[0m
+[0mGET /api/cases [32m200[0m 5163.167 ms - 4782[0m
+[0mGET /api/cases/field-officers [32m200[0m 3.323 ms - 60[0m
+[0mGET /api/cases/b5d8cc0a-b7b1-4dd0-915e-6b43ebbf5dd5 [32m200[0m 5642.430 ms - 3050[0m
+[0mPOST /api/auth/login [32m200[0m 2735.421 ms - 629[0m
+[0mGET /api/cases/field-officers [32m200[0m 0.920 ms - 60[0m
+[0mGET /api/cases/field-officers?caseId=b5d8cc0a-b7b1-4dd0-915e-6b43ebbf5dd5 [32m200[0m 5233.553 ms - 375[0m
+[0mPOST /api/auth/login [32m200[0m 2941.856 ms - 629[0m
+[0mGET /api/cases [32m200[0m 7545.565 ms - 4782[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ override existing { override: true }
+Backend listening on http://localhost:5000
+[0mPOST /api/auth/login [32m200[0m 4125.898 ms - 629[0m
+[0mGET /api/cases [32m200[0m 5756.030 ms - 4782[0m
+[0mGET /api/cases/field-officers [32m200[0m 2181.595 ms - 6583[0m
+[0mPOST /api/cases/9211f2b3-cb04-4d41-a11b-c68f258b4965/transfer [32m200[0m 11643.915 ms - 1265[0m
+[0mGET /api/cases/9211f2b3-cb04-4d41-a11b-c68f258b4965 [32m200[0m 5838.145 ms - 2830[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+Backend listening on http://localhost:5000
+[0mPOST /api/auth/login [32m200[0m 4143.980 ms - 629[0m
+[0mGET /api/cases [32m200[0m 5341.191 ms - 4792[0m
+[0mGET /api/cases/field-officers [32m200[0m 2675.809 ms - 6583[0m
+[0mPOST /api/cases/99af9e21-6144-42a4-a511-ecc152a133bb/transfer [32m200[0m 12350.733 ms - 1241[0m
+[0mGET /api/cases/99af9e21-6144-42a4-a511-ecc152a133bb [32m200[0m 5309.789 ms - 2811[0m
+[0mGET /api/auth/me [36m304[0m 2.295 ms - -[0m
+[0mGET /api/cases/b5d8cc0a-b7b1-4dd0-915e-6b43ebbf5dd5 [36m304[0m 5688.692 ms - -[0m
+[0mGET /api/cases [32m200[0m 4549.957 ms - 4796[0m
+[0mGET /api/cases/bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95 [36m304[0m 5466.942 ms - -[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ enable debugging { debug: true }
+Backend listening on http://localhost:5000
+[0mPOST /api/auth/login [32m200[0m 4028.788 ms - 629[0m
+[0mGET /api/cases [32m200[0m 18942.452 ms - 4796[0m
+[0mGET /api/cases/field-officers?caseId=679d8dc7-561b-41e9-a36e-cf898edfb6b4 [32m200[0m 4780.504 ms - 375[0m
+[0mPOST /api/cases/679d8dc7-561b-41e9-a36e-cf898edfb6b4/transfer [32m200[0m 8276.151 ms - 1241[0m
+[0mGET /api/cases/679d8dc7-561b-41e9-a36e-cf898edfb6b4 [32m200[0m 5543.222 ms - 2811[0m
+[0mPOST /api/auth/login [32m200[0m 2753.079 ms - 629[0m
+[0mGET /api/cases [32m200[0m 3718.028 ms - 4800[0m
+[0mGET /api/auth/me [36m304[0m 3.675 ms - -[0m
+[0mGET /api/cases/bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95 [36m304[0m 5930.110 ms - -[0m
+[0mPOST /api/auth/login [32m200[0m 2140.744 ms - 629[0m
+[0mGET /api/cases/8255b8a8-02f8-4efb-89b4-25621ab623f3 [32m200[0m 7453.133 ms - 1418[0m
+[0mGET /api/cases/field-officers [32m200[0m 3057.542 ms - 6583[0m
+[0mPOST /api/cases/8255b8a8-02f8-4efb-89b4-25621ab623f3/transfer [33m409[0m 4656.194 ms - 555[0m
+[0mPOST /api/auth/login [32m200[0m 2327.543 ms - 629[0m
+[0mGET /api/cases/field-officers?caseId=8255b8a8-02f8-4efb-89b4-25621ab623f3 [32m200[0m 5455.690 ms - 375[0m
+[0mGET /api/auth/me [36m304[0m 1.852 ms - -[0m
+[0mGET /api/cases/bfb5326a-e8fe-4200-8d6d-60d8ba5b6e95 [36m304[0m 5662.615 ms - -[0m
+[0mPOST /api/auth/login [32m200[0m 2621.962 ms - 629[0m
+[0mGET /api/auth/me [36m304[0m 1.194 ms - -[0m
+[0mGET /api/dashboard [32m200[0m 4416.998 ms - 4698[0m
+[0mGET /api/cases [32m200[0m 2696.498 ms - 5192[0m
+[0mGET /api/cases/8255b8a8-02f8-4efb-89b4-25621ab623f3 [32m200[0m 4817.644 ms - 1418[0m
+[0mGET /api/cases/field-officers?caseId=8255b8a8-02f8-4efb-89b4-25621ab623f3&region=Dhaka+Metro [32m200[0m 9711.588 ms - 375[0m
+[0mGET /api/cases [36m304[0m 4084.972 ms - -[0m
+[0mGET /api/cases/679d8dc7-561b-41e9-a36e-cf898edfb6b4 [32m200[0m 5398.686 ms - 2811[0m
+[0mGET /api/cases/field-officers?caseId=679d8dc7-561b-41e9-a36e-cf898edfb6b4&region=Dhaka+Metro [32m200[0m 4379.282 ms - 375[0m
+[0mGET /api/cases/field-officers?caseId=679d8dc7-561b-41e9-a36e-cf898edfb6b4 [32m200[0m 7865.872 ms - 375[0m
+prisma:error Error in PostgreSQL connection: Error { kind: Io, cause: Some(Os { code: 10054, kind: ConnectionReset, message: "An existing connection was forcibly closed by the remote host." }) }
+prisma:error Error in PostgreSQL connection: Error { kind: Io, cause: Some(Os { code: 10054, kind: ConnectionReset, message: "An existing connection was forcibly closed by the remote host." }) }
+prisma:error Error in PostgreSQL connection: Error { kind: Io, cause: Some(Os { code: 10054, kind: ConnectionReset, message: "An existing connection was forcibly closed by the remote host." }) }
+prisma:error Error in PostgreSQL connection: Error { kind: Io, cause: Some(Os { code: 10054, kind: ConnectionReset, message: "An existing connection was forcibly closed by the remote host." }) }
+prisma:error Error in PostgreSQL connection: Error { kind: Io, cause: Some(Os { code: 10054, kind: ConnectionReset, message: "An existing connection was forcibly closed by the remote host." }) }
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ suppress logs { quiet: true }
+Backend listening on http://localhost:5000
+[0mPOST /api/auth/login [32m200[0m 5180.546 ms - 629[0m
+[0mGET /api/cases/8255b8a8-02f8-4efb-89b4-25621ab623f3 [32m200[0m 7676.589 ms - 1418[0m
+[0mGET /api/cases/field-officers?caseId=8255b8a8-02f8-4efb-89b4-25621ab623f3&areaId=4986b977-0c2a-4632-9449-2021ddd9ff83&providerId=dfcd628a-faa2-41d9-a83e-04a3969389ac&region=Dhaka%20Metro [32m200[0m 4795.154 ms - 375[0m
+[0mGET /api/health [32m200[0m 0.541 ms - 151[0m
+[0mGET /api/auth/me [36m304[0m 7.705 ms - -[0m
+[0mGET /api/cases/679d8dc7-561b-41e9-a36e-cf898edfb6b4 [36m304[0m 5470.659 ms - -[0m
+[0mGET /api/cases/field-officers?caseId=679d8dc7-561b-41e9-a36e-cf898edfb6b4&areaId=4986b977-0c2a-4632-9449-2021ddd9ff83&providerId=dfcd628a-faa2-41d9-a83e-04a3969389ac&region=Dhaka+Metro [32m200[0m 10383.501 ms - 375[0m
+[0mGET /api/cases [32m200[0m 4086.266 ms - 5720[0m
+[0mGET /api/cases/3fc51a5f-47a9-4e7f-8d2d-3a1f3b3e9069 [32m200[0m 3872.826 ms - 4569[0m
+[0mGET /api/cases/field-officers?caseId=3fc51a5f-47a9-4e7f-8d2d-3a1f3b3e9069&providerId=dfcd628a-faa2-41d9-a83e-04a3969389ac [32m200[0m 3512.396 ms - 6583[0m
+[0mPOST /api/cases/3fc51a5f-47a9-4e7f-8d2d-3a1f3b3e9069/transfer [32m200[0m 6503.061 ms - 1254[0m
+[0mGET /api/cases/3fc51a5f-47a9-4e7f-8d2d-3a1f3b3e9069 [32m200[0m 4413.353 ms - 5976[0m
+[0mGET /api/cases/field-officers?caseId=3fc51a5f-47a9-4e7f-8d2d-3a1f3b3e9069&providerId=dfcd628a-faa2-41d9-a83e-04a3969389ac [36m304[0m 3501.478 ms - -[0m

@@ -1,0 +1,35 @@
+.recent-alerts {
+  padding: 22px;
+}
+
+.recent-alerts__list {
+  display: grid;
+  gap: 12px;
+}
+
+.recent-alerts__list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.recent-alerts__list a:hover {
+  border-color: #bfdbfe;
+  background: #f8fbff;
+}
+
+.recent-alerts strong,
+.recent-alerts span {
+  display: block;
+}
+
+.recent-alerts span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}

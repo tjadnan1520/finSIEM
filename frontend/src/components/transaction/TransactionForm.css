@@ -1,0 +1,100 @@
+.transaction-form {
+  padding: 22px;
+}
+
+.transaction-form__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.transaction-form h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.transaction-form p {
+  margin: 5px 0 0;
+  color: var(--muted);
+}
+
+.transaction-form__segments {
+  display: inline-flex;
+  padding: 4px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.transaction-form__segments button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  color: var(--muted);
+  background: transparent;
+  font-weight: 800;
+}
+
+.transaction-form__segments button.active {
+  color: var(--primary);
+  background: #dbeafe;
+}
+
+.transaction-form__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.transaction-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.transaction-form select,
+.transaction-form input {
+  min-height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 12px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.transaction-form__message {
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.transaction-form > button[type="submit"] {
+  min-height: 42px;
+  margin-top: 16px;
+  padding: 0 18px;
+  color: #ffffff;
+  background: var(--primary);
+  border: 0;
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+.transaction-form > button[type="submit"]:disabled {
+  opacity: 0.65;
+}
+
+@media (max-width: 850px) {
+  .transaction-form__header,
+  .transaction-form__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .transaction-form__header {
+    flex-direction: column;
+  }
+}

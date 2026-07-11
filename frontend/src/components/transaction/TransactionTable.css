@@ -1,0 +1,41 @@
+.transaction-table {
+  padding: 22px;
+}
+
+.transaction-table__scroll {
+  overflow-x: auto;
+}
+
+.transaction-table table {
+  width: 100%;
+  min-width: 860px;
+  border-collapse: collapse;
+}
+
+.transaction-table th,
+.transaction-table td {
+  padding: 13px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.transaction-table th {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.transaction-table__transaction-phone,
+.transaction-table td small {
+  display: block;
+}
+
+.transaction-table__transaction-phone {
+  font-weight: 800;
+}
+
+.transaction-table td small {
+  margin-top: 3px;
+  color: var(--muted);
+}

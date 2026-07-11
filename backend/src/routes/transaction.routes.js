@@ -1,0 +1,31 @@
+const express = require("express");
+const { body } = require("express-validator");
+const transactionController = require("../controllers/transaction.controller");
+const authenticate = require("../middleware/auth.middleware");
+const authorizeRoles = require("../middleware/role.middleware");
+const validateRequest = require("../middleware/validateRequest");
+
+const router = express.Router();
+
+const transactionValidation = [
+  body("type").isIn(["CASH_IN", "CASH_OUT"]).withMessage("Transaction type must be CASH_IN or CASH_OUT"),
+  body("amount").isFloat({ min: 1 }).withMessage("Amount must be greater than zero"),
+  body("transactionPhone")
+    .trim()
+    .matches(/^(\+?88)?01[3-9]\d{8}$/)
+    .withMessage("A valid Bangladeshi transaction phone number is required"),
+  body("providerId").isUUID().withMessage("A valid provider ID is required"),
+  body("agentId").isUUID().withMessage("A valid agent ID is required")
+];
+
+router.get("/", authenticate, authorizeRoles("Agent", "Operator", "Management"), transactionController.listTransactions);
+router.post(
+  "/",
+  authenticate,
+  authorizeRoles("Agent", "Management"),
+  transactionValidation,
+  validateRequest,
+  transactionController.createTransaction
+);
+
+module.exports = router;
