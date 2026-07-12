@@ -8,7 +8,7 @@ const Login = () => {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [credentials, setCredentials] = useState({ email: "operator@finsiem.local", password: "Password123!" });
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -66,11 +66,6 @@ const Login = () => {
           <button type="submit" disabled={loading}>{loading ? "Signing in" : "Sign in"}</button>
         </form>
 
-        <div className="login-card__hint">
-          <span>fieldofficer@finsiem.local</span>
-          <span>operator@finsiem.local</span>
-          <span>management@finsiem.local</span>
-        </div>
       </section>
     </main>
   );

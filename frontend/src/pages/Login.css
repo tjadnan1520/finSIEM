@@ -84,10 +84,3 @@
   color: var(--danger);
 }
 
-.login-card__hint {
-  display: grid;
-  gap: 6px;
-  margin-top: 20px;
-  color: var(--muted);
-  font-size: 12px;
-}
