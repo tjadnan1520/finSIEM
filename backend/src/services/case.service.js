@@ -2,6 +2,47 @@ const prisma = require("../config/prisma");
 const userRepository = require("../repositories/user.repository");
 const ApiError = require("../utils/ApiError");
 
+const formatUserLite = (user) => user ? {
+  id: user.id,
+  name: user.name,
+  email: user.email,
+  role: user.role?.name || null
+} : null;
+
+const formatFieldOfficerAssignment = (assignment) => assignment ? {
+  id: assignment.id,
+  assignedToId: assignment.assignedToId,
+  assignedById: assignment.assignedById,
+  status: assignment.status,
+  assignedAt: assignment.assignedAt,
+  acceptedAt: assignment.acceptedAt,
+  assignedTo: formatUserLite(assignment.assignedTo),
+  assignedBy: formatUserLite(assignment.assignedBy)
+} : null;
+
+const formatCaseDetails = (caseRecord) => ({
+  id: caseRecord.id,
+  caseNumber: caseRecord.caseNumber,
+  title: caseRecord.title,
+  status: caseRecord.status,
+  priority: caseRecord.priority,
+  alert: caseRecord.alert,
+  agent: caseRecord.agent,
+  escalations: caseRecord.escalations,
+  notes: caseRecord.notes?.map((note) => ({
+    id: note.id,
+    body: note.body,
+    createdAt: note.createdAt,
+    author: formatUserLite(note.author)
+  })) || [],
+  timeline: caseRecord.timeline || [],
+  assignments: (caseRecord.assignments || [])
+    .filter((assignment) => assignment.assignedTo?.role?.name === "Field Officer")
+    .map(formatFieldOfficerAssignment),
+  createdAt: caseRecord.createdAt,
+  updatedAt: caseRecord.updatedAt
+});
+
 const getCaseVisibilityWhere = (user) => {
   if (user.role === "Operator") {
     return {
@@ -27,7 +68,12 @@ const listCases = async (user) => {
     include: {
       alert: { include: { provider: true } },
       agent: { include: { area: true } },
-      assignments: { include: { assignedTo: true }, orderBy: { assignedAt: "desc" }, take: 1 }
+      assignments: {
+        where: { assignedTo: { role: { name: "Field Officer" } } },
+        include: { assignedTo: { include: { role: true } } },
+        orderBy: { assignedAt: "desc" },
+        take: 1
+      }
     },
     orderBy: { createdAt: "desc" },
     take: 50
@@ -71,14 +117,20 @@ const getCaseDetails = async (id, user) => {
     include: {
       alert: { include: { provider: true, aiAnalysis: true, evidence: true } },
       agent: { include: { area: true } },
-      assignments: { include: { assignedTo: true, assignedBy: true } },
+      assignments: {
+        include: {
+          assignedTo: { include: { role: true } },
+          assignedBy: { include: { role: true } }
+        },
+        orderBy: { assignedAt: "desc" }
+      },
       escalations: true,
       notes: { include: { author: true }, orderBy: { createdAt: "desc" } },
       timeline: { orderBy: { createdAt: "asc" } }
     }
   });
 
-  return canViewCase(caseRecord, user) ? caseRecord : null;
+  return canViewCase(caseRecord, user) ? formatCaseDetails(caseRecord) : null;
 };
 
 const listFieldOfficers = async ({ caseId = null, areaId = null, providerId = null, region = null, user = null } = {}) => {
@@ -164,9 +216,12 @@ const transferCase = async ({ caseId, assignedToId, assignedById }) => {
         caseId,
         assignedToId,
         assignedById,
-        status: "TRANSFERRED"
+        status: "ASSIGNED"
       },
-      include: { assignedTo: true, assignedBy: true }
+      include: {
+        assignedTo: { include: { role: true } },
+        assignedBy: { include: { role: true } }
+      }
     });
 
     await tx.case.update({
@@ -177,15 +232,15 @@ const transferCase = async ({ caseId, assignedToId, assignedById }) => {
     await tx.timeline.create({
       data: {
         caseId,
-        event: "Transfer",
-        description: `Sent to ${fieldOfficer.name} for follow-up.`
+        event: "Assignment",
+        description: `Assigned to ${fieldOfficer.name} for field follow-up.`
       }
     });
 
     await tx.notification.create({
       data: {
         userId: assignedToId,
-        title: "Case transferred",
+        title: "Case assigned",
         body: `${caseRecord.caseNumber} is ready for review.`
       }
     });
@@ -193,13 +248,13 @@ const transferCase = async ({ caseId, assignedToId, assignedById }) => {
     await tx.auditLog.create({
       data: {
         actorId: assignedById,
-        action: "CASE_TRANSFERRED",
+        action: "CASE_ASSIGNED",
         resource: "Case",
         newValue: { caseId, assignedToId }
       }
     });
 
-    return assignment;
+    return formatFieldOfficerAssignment(assignment);
   }, {
     maxWait: 10000,
     timeout: 30000
@@ -267,12 +322,18 @@ const resolveCase = async ({ caseId, userId }) => {
       include: {
         alert: { include: { provider: true, aiAnalysis: true, evidence: true } },
         agent: { include: { area: true } },
-        assignments: { include: { assignedTo: true, assignedBy: true } },
+        assignments: {
+          include: {
+            assignedTo: { include: { role: true } },
+            assignedBy: { include: { role: true } }
+          },
+          orderBy: { assignedAt: "desc" }
+        },
         escalations: true,
         notes: { include: { author: true }, orderBy: { createdAt: "desc" } },
         timeline: { orderBy: { createdAt: "asc" } }
       }
-    });
+    }).then(formatCaseDetails);
   }, {
     maxWait: 10000,
     timeout: 30000

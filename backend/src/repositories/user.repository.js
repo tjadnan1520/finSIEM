@@ -5,14 +5,22 @@ const userInclude = { role: true, operatorProvider: true };
 const findByEmail = (email) => {
   return prisma.user.findUnique({
     where: { email },
-    include: { ...userInclude, fieldOfficer: { include: { area: true } } }
+    include: {
+      ...userInclude,
+      agent: { include: { area: true } },
+      fieldOfficer: { include: { area: true } }
+    }
   });
 };
 
 const findById = (id) => {
   return prisma.user.findUnique({
     where: { id },
-    include: { ...userInclude, fieldOfficer: { include: { area: true } } }
+    include: {
+      ...userInclude,
+      agent: { include: { area: true } },
+      fieldOfficer: { include: { area: true } }
+    }
   });
 };
 

@@ -19,15 +19,22 @@ const toDto = (transaction) => ({
 
 const listTransactions = async (user = null) => {
   const transactions = await transactionRepository.listTransactions({
-    providerId: user?.role === "Operator" ? user.operatorProviderId : null
+    providerId: user?.role === "Operator" ? user.operatorProviderId : null,
+    agentId: user?.role === "Agent" ? user.agent?.id : null
   });
   return transactions.map(toDto);
 };
 
-const createTransaction = async ({ type, amount, transactionPhone, providerId, agentId, userId }) => {
+const createTransaction = async ({ type, amount, transactionPhone, providerId, agentId, user }) => {
+  const effectiveAgentId = user?.role === "Agent" ? user.agent?.id : agentId;
+
+  if (user?.role === "Agent" && !effectiveAgentId) {
+    throw new ApiError(409, "Agent account is not linked to a cash point");
+  }
+
   const [provider, agent] = await Promise.all([
     providerRepository.findProvider(providerId),
-    agentRepository.findAgent(agentId)
+    agentRepository.findAgent(effectiveAgentId)
   ]);
 
   if (!provider) {
@@ -63,7 +70,7 @@ const createTransaction = async ({ type, amount, transactionPhone, providerId, a
     transactionPhone,
     provider,
     agent,
-    userId
+    userId: user.id
   });
   dashboardService.invalidateDashboardCache();
 

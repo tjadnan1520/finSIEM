@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { BrainCircuit, ListChecks } from "lucide-react";
 import { listAlerts } from "../services/alert.service";
 import { formatDateTime } from "../utils/formatters";
 import Loader from "../components/common/Loader";
@@ -25,10 +26,22 @@ const Alerts = () => {
       <section className="alerts-list panel">
         {alerts.map((alert) => (
           <Link to={`/alerts/${alert.id}`} key={alert.id}>
-            <div>
+            <div className="alerts-list__content">
               <strong>{alert.title}</strong>
-              <span>{alert.provider} • {alert.type} • {formatDateTime(alert.createdAt)}</span>
-              {alert.summary && <p>{alert.summary}</p>}
+              <span>{alert.provider} - {alert.type} - {formatDateTime(alert.createdAt)}</span>
+              {alert.aiAnalysis?.summary && (
+                <p className="alerts-list__ai">
+                  <BrainCircuit size={16} />
+                  {alert.aiAnalysis.summary}
+                </p>
+              )}
+              {alert.aiAnalysis?.evidenceExplanation && <p>{alert.aiAnalysis.evidenceExplanation}</p>}
+              {alert.evidence?.length > 0 && (
+                <div className="alerts-list__evidence" aria-label="Evidence summary">
+                  <ListChecks size={16} />
+                  <span>{alert.evidence.length} evidence signals</span>
+                </div>
+              )}
             </div>
             <em className={`status-pill ${alert.severity.toLowerCase()}`}>{alert.severity}</em>
           </Link>

@@ -1,5 +1,53 @@
 const prisma = require("../config/prisma");
 
+const toNumber = (value) => Number(value || 0);
+
+const formatAiAnalysis = (analysis) => analysis ? {
+  id: analysis.id,
+  summary: analysis.summary,
+  reasoning: analysis.reasoning,
+  evidenceExplanation: analysis.evidenceExplanation,
+  recommendation: analysis.recommendation,
+  confidence: toNumber(analysis.confidence),
+  uncertainty: analysis.uncertainty,
+  limitations: analysis.limitations,
+  createdAt: analysis.createdAt
+} : null;
+
+const formatEvidence = (evidence = []) => evidence.map((item) => ({
+  id: item.id,
+  source: item.source,
+  label: item.label,
+  value: item.value,
+  weight: toNumber(item.weight)
+}));
+
+const formatCase = (caseRecord) => caseRecord ? {
+  id: caseRecord.id,
+  caseNumber: caseRecord.caseNumber,
+  title: caseRecord.title,
+  status: caseRecord.status,
+  priority: caseRecord.priority,
+  createdAt: caseRecord.createdAt,
+  timeline: caseRecord.timeline?.map((item) => ({
+    id: item.id,
+    event: item.event,
+    description: item.description,
+    createdAt: item.createdAt
+  })) || [],
+  assignments: caseRecord.assignments?.map((assignment) => ({
+    id: assignment.id,
+    status: assignment.status,
+    assignedAt: assignment.assignedAt,
+    acceptedAt: assignment.acceptedAt,
+    assignedTo: assignment.assignedTo ? {
+      id: assignment.assignedTo.id,
+      name: assignment.assignedTo.name,
+      email: assignment.assignedTo.email
+    } : null
+  })) || []
+} : null;
+
 const getAlertVisibilityWhere = (user) => {
   if (user.role === "Operator") {
     return {
@@ -28,7 +76,11 @@ const getAlertVisibilityWhere = (user) => {
 const listAlerts = async (user) => {
   const alerts = await prisma.alert.findMany({
     where: getAlertVisibilityWhere(user),
-    include: { provider: true, aiAnalysis: true },
+    include: {
+      provider: true,
+      aiAnalysis: true,
+      evidence: { orderBy: { createdAt: "asc" } }
+    },
     orderBy: { createdAt: "desc" },
     take: 50
   });
@@ -41,6 +93,8 @@ const listAlerts = async (user) => {
     status: alert.status,
     provider: alert.provider?.name || "All Providers",
     summary: alert.aiAnalysis?.summary || "",
+    aiAnalysis: formatAiAnalysis(alert.aiAnalysis),
+    evidence: formatEvidence(alert.evidence),
     createdAt: alert.createdAt
   }));
 };
@@ -63,8 +117,24 @@ const getAlertDetails = async (id, user) => {
     include: {
       provider: true,
       aiAnalysis: true,
-      evidence: true,
-      case: { include: { timeline: true, assignments: { include: { assignedTo: true } } } }
+      evidence: { orderBy: { createdAt: "asc" } },
+      case: {
+        include: {
+          timeline: { orderBy: { createdAt: "asc" } },
+          assignments: {
+            include: {
+              assignedTo: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true
+                }
+              }
+            },
+            orderBy: { assignedAt: "desc" }
+          }
+        }
+      }
     }
   });
 
@@ -79,15 +149,10 @@ const getAlertDetails = async (id, user) => {
     severity: alert.severity,
     status: alert.status,
     provider: alert.provider?.name || "All Providers",
-    aiAnalysis: alert.aiAnalysis,
-    evidence: alert.evidence.map((item) => ({
-      id: item.id,
-      source: item.source,
-      label: item.label,
-      value: item.value,
-      weight: Number(item.weight)
-    })),
-    case: alert.case,
+    summary: alert.aiAnalysis?.summary || "",
+    aiAnalysis: formatAiAnalysis(alert.aiAnalysis),
+    evidence: formatEvidence(alert.evidence),
+    case: formatCase(alert.case),
     createdAt: alert.createdAt
   };
 };

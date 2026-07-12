@@ -54,6 +54,13 @@ const fieldOfficerName = (index) => FIELD_OFFICER_NAMES[index] || `Field Officer
 
 const officerPhone = (index) => `+8801933${String(100101 + index).padStart(6, "0")}`;
 
+const agentEmail = (index, name) => {
+  if (index === 0) return "agent@finsiem.local";
+  if (index === 1) return "uttara.agent@finsiem.local";
+  if (index === 2) return "sylhet.agent@finsiem.local";
+  return `${slugEmail(name)}.agent@finsiem.local`;
+};
+
 const reset = async () => {
   await prisma.auditLog.deleteMany();
   await prisma.notification.deleteMany();
@@ -159,15 +166,30 @@ const createReferenceData = async () => {
 
   for (const [index, [key, name, region]] of AREA_SEEDS.entries()) {
     areas[key] = await prisma.area.create({ data: { name, region } });
+    const agentName = AGENT_NAMES[index];
+    const agentUser = await prisma.user.create({
+      data: {
+        name: agentName,
+        email: agentEmail(index, agentName),
+        passwordHash: hash,
+        avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(agentName)}`,
+        roleId: roles.Agent.id
+      }
+    });
 
     agents[key] = await prisma.agent.create({
       data: {
         code: `AG-${String(index + 1).padStart(3, "0")}`,
-        name: AGENT_NAMES[index],
+        name: agentName,
         phone: `+88017${String(11000101 + index).padStart(8, "0")}`,
+        userId: agentUser.id,
         areaId: areas[key].id
       }
     });
+
+    if (index === 0) users.agent = agentUser;
+    if (index === 1) users.uttaraAgent = agentUser;
+    if (index === 2) users.sylhetAgent = agentUser;
 
     physicalCashRows.push({
       agentId: agents[key].id,
@@ -366,7 +388,7 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
     data: {
       caseNumber: "CASE-DEMO-2001",
       title: "Review Nagad Uttara liquidity position",
-      status: "ASSIGNED",
+      status: "OPEN",
       priority: "HIGH",
       alertId: nagadAlert.id,
       agentId: agents.uttara.id
@@ -381,16 +403,6 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
       priority: "CRITICAL",
       alertId: rocketAlert.id,
       agentId: agents.zindabazar.id
-    }
-  });
-
-  await prisma.assignment.create({
-    data: {
-      caseId: nagadCase.id,
-      assignedToId: users.uttaraFieldOfficer.id,
-      assignedById: users.nagadOperator.id,
-      status: "TRANSFERRED",
-      acceptedAt: new Date()
     }
   });
 
@@ -413,7 +425,7 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
   await prisma.timeline.createMany({
     data: [
       { caseId: nagadCase.id, event: "Alert Generated", description: "Alert recorded for review." },
-      { caseId: nagadCase.id, event: "Transfer", description: `Sent to ${users.uttaraFieldOfficer.name} for follow-up.` },
+      { caseId: nagadCase.id, event: "Case Created", description: "Waiting for operator field-worker assignment." },
       { caseId: rocketCase.id, event: "Alert Generated", description: "Critical confidence and liquidity alert created." },
       { caseId: rocketCase.id, event: "Case Created", description: "Case opened from alert activity." },
       { caseId: rocketCase.id, event: "Management Review", description: "Sent to management for review." }
@@ -422,7 +434,7 @@ const createOperationalData = async ({ users, areas, agents, providers }) => {
 
   await prisma.notification.createMany({
     data: [
-      { userId: users.uttaraFieldOfficer.id, title: "Case transferred", body: "CASE-DEMO-2001 is ready for review." },
+      { userId: users.nagadOperator.id, title: "Case needs assignment", body: "CASE-DEMO-2001 is ready for manual field-worker assignment." },
       { userId: users.manager.id, title: "Critical case available", body: "CASE-DEMO-2002 is ready for review." }
     ]
   });

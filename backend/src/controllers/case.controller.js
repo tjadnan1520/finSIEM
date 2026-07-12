@@ -45,7 +45,7 @@ const transferCase = async (req, res, next) => {
       assignedToId: req.body.assignedToId,
       assignedById: req.user.id
     });
-    success(res, assignment, "Case transferred");
+    success(res, assignment, "Case assigned");
   } catch (error) {
     next(error);
   }

@@ -14,7 +14,7 @@ const createTransaction = async (req, res, next) => {
   try {
     const transaction = await transactionService.createTransaction({
       ...req.body,
-      userId: req.user.id
+      user: req.user
     });
     success(res, transaction, "Transaction processed", 201);
   } catch (error) {

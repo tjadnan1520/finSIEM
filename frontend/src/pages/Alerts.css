@@ -25,6 +25,10 @@
   display: block;
 }
 
+.alerts-list__content {
+  min-width: 0;
+}
+
 .alerts-list span,
 .alerts-list p {
   color: var(--muted);
@@ -32,4 +36,36 @@
 
 .alerts-list p {
   margin: 8px 0 0;
+  line-height: 1.55;
+}
+
+.alerts-list__ai,
+.alerts-list__evidence {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.alerts-list__ai {
+  color: var(--text);
+}
+
+.alerts-list__ai svg,
+.alerts-list__evidence svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--primary);
+}
+
+.alerts-list__evidence {
+  margin-top: 10px;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+@media (max-width: 680px) {
+  .alerts-list a {
+    display: grid;
+  }
 }

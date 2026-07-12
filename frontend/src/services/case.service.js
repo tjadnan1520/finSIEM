@@ -27,6 +27,8 @@ export const transferCase = async (id, assignedToId) => {
   return response.data;
 };
 
+export const assignCase = transferCase;
+
 export const resolveCase = async (id) => {
   const response = await apiClient.post(`/cases/${id}/resolve`);
   return response.data;

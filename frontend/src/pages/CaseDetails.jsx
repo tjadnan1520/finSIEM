@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { getCase, listFieldOfficers, resolveCase, transferCase } from "../services/case.service";
+import { assignCase, getCase, listFieldOfficers, resolveCase } from "../services/case.service";
 import { formatDateTime } from "../utils/formatters";
 import Loader from "../components/common/Loader";
 import "./CaseDetails.css";
@@ -11,10 +11,6 @@ const CaseDetails = () => {
   const { id } = useParams();
   const [caseRecord, setCaseRecord] = useState(null);
   const [fieldOfficers, setFieldOfficers] = useState([]);
-  const [regionOptions, setRegionOptions] = useState([]);
-  const [regionFilter, setRegionFilter] = useState("");
-  const [areaOptions, setAreaOptions] = useState([]);
-  const [areaFilter, setAreaFilter] = useState("");
   const [assignedToId, setAssignedToId] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -30,10 +26,6 @@ const CaseDetails = () => {
     getCase(id)
       .then((loadedCase) => {
         setCaseRecord(loadedCase);
-        setRegionFilter(loadedCase.agent?.area?.region || "");
-        setRegionOptions(loadedCase.agent?.area?.region ? [loadedCase.agent.area.region] : []);
-        setAreaFilter(loadedCase.agent?.area?.id || "");
-        setAreaOptions(loadedCase.agent?.area ? [loadedCase.agent.area] : []);
       })
       .catch((requestError) => setError(requestError.message));
   }, [id]);
@@ -43,16 +35,15 @@ const CaseDetails = () => {
 
     listFieldOfficers({
       caseId: id,
-      areaId: areaFilter,
-      providerId: caseRecord.alert.provider?.id,
-      region: regionFilter
+      areaId: caseRecord.agent?.area?.id,
+      providerId: caseRecord.alert.provider?.id
     })
       .then((officers) => {
         setFieldOfficers(officers);
-        setAssignedToId((current) => officers.some((officer) => officer.id === current) ? current : officers[0]?.id || "");
+        setAssignedToId((current) => officers.some((officer) => officer.id === current) ? current : "");
       })
       .catch((requestError) => setMessage(requestError.message));
-  }, [areaFilter, canTransfer, caseRecord, id, regionFilter]);
+  }, [canTransfer, caseRecord, id]);
 
   const handleTransfer = async (event) => {
     event.preventDefault();
@@ -61,10 +52,11 @@ const CaseDetails = () => {
     setSaving(true);
     setMessage("");
     try {
-      await transferCase(id, assignedToId);
+      await assignCase(id, assignedToId);
       const updatedCase = await getCase(id);
       setCaseRecord(updatedCase);
-      setMessage("Case transferred successfully.");
+      setAssignedToId("");
+      setMessage("Case assigned successfully.");
     } catch (requestError) {
       setMessage(requestError.message);
     } finally {
@@ -111,6 +103,7 @@ const CaseDetails = () => {
               <p><strong>Region:</strong> {caseRecord.agent.area.region}</p>
             </>
           )}
+          <p><strong>Assigned Field Worker:</strong> {caseRecord.assignments?.[0]?.assignedTo?.name || "Unassigned"}</p>
           {canResolve && (
             <button className="case-resolve-button" type="button" disabled={saving} onClick={handleResolve}>
               {saving ? "Resolving" : "Mark Resolved"}
@@ -119,7 +112,7 @@ const CaseDetails = () => {
         </article>
         {canTransfer && (
           <article className="panel case-panel">
-            <h2>Transfer Case</h2>
+            <h2>Assign Field Worker</h2>
             <form className="case-transfer" onSubmit={handleTransfer}>
               <label>
                 Provider
@@ -130,35 +123,29 @@ const CaseDetails = () => {
                 </select>
               </label>
               <label>
-                Region
-                <select value={regionFilter} onChange={(event) => setRegionFilter(event.target.value)}>
-                  <option value="">All regions</option>
-                  {regionOptions.map((region) => (
-                    <option key={region} value={region}>{region}</option>
-                  ))}
+                Case Area
+                <select value={caseRecord.agent?.area?.id || ""} disabled>
+                  <option value={caseRecord.agent?.area?.id || ""}>
+                    {caseRecord.agent?.area?.name || "No area attached"}
+                    {caseRecord.agent?.area?.region ? `, ${caseRecord.agent.area.region}` : ""}
+                  </option>
                 </select>
               </label>
               <label>
-                Area
-                <select value={areaFilter} onChange={(event) => setAreaFilter(event.target.value)}>
-                  {areaOptions.map((area) => (
-                    <option key={area.id} value={area.id}>{area.name}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Available Field Officer
+                Field Worker
                 <select value={assignedToId} onChange={(event) => setAssignedToId(event.target.value)}>
+                  <option value="">Select a field worker</option>
                   {fieldOfficers.map((officer) => (
                     <option key={officer.id} value={officer.id}>
-                      {officer.name} - {officer.provider}, {officer.area}, {officer.region}
+                      {officer.name} - {officer.officerCode || "No code"} - {officer.phone || "No phone"}
                     </option>
                   ))}
                 </select>
               </label>
-              {!fieldOfficers.length && <p>No field officer found for the selected filter.</p>}
+              {!fieldOfficers.length && <p>No field worker found for this case area and provider.</p>}
+              {fieldOfficers.length > 0 && !assignedToId && <p>Select a field worker from the dropdown to assign this case.</p>}
               <button type="submit" disabled={saving || !assignedToId}>
-                {saving ? "Transferring" : "Transfer Case"}
+                {saving ? "Assigning" : "Assign Case"}
               </button>
             </form>
           </article>

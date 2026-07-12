@@ -51,6 +51,17 @@ const authenticate = async (req, res, next) => {
         id: user.operatorProvider.id,
         name: user.operatorProvider.name,
         code: user.operatorProvider.code
+      } : null,
+      agent: user.agent ? {
+        id: user.agent.id,
+        code: user.agent.code,
+        name: user.agent.name,
+        phone: user.agent.phone,
+        area: user.agent.area ? {
+          id: user.agent.area.id,
+          name: user.agent.area.name,
+          region: user.agent.area.region
+        } : null
       } : null
     };
 

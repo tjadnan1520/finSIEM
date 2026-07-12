@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import { createTransaction } from "../../services/transaction.service";
 import { listProviders } from "../../services/provider.service";
 import { listAgents } from "../../services/agent.service";
 import "./TransactionForm.css";
 
 const TransactionForm = ({ initialType = "CASH_IN", onCreated }) => {
+  const { user } = useAuth();
   const [type, setType] = useState(initialType);
   const [providers, setProviders] = useState([]);
   const [agents, setAgents] = useState([]);
@@ -19,16 +21,17 @@ const TransactionForm = ({ initialType = "CASH_IN", onCreated }) => {
   useEffect(() => {
     Promise.all([listProviders(), listAgents()])
       .then(([providerData, agentData]) => {
+        const visibleAgents = user?.role === "Agent" && user.agent ? [user.agent] : agentData;
         setProviders(providerData);
-        setAgents(agentData);
+        setAgents(visibleAgents);
         setForm((current) => ({
           ...current,
           providerId: current.providerId || providerData[0]?.id || "",
-          agentId: current.agentId || agentData[0]?.id || ""
+          agentId: user?.role === "Agent" && user.agent ? user.agent.id : current.agentId || visibleAgents[0]?.id || ""
         }));
       })
       .catch((error) => setMessage(error.message));
-  }, []);
+  }, [user]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -80,9 +83,15 @@ const TransactionForm = ({ initialType = "CASH_IN", onCreated }) => {
         </label>
         <label>
           Agent
-          <select value={form.agentId} onChange={(event) => setForm({ ...form, agentId: event.target.value })}>
+          <select
+            value={form.agentId}
+            onChange={(event) => setForm({ ...form, agentId: event.target.value })}
+            disabled={user?.role === "Agent"}
+          >
             {agents.map((agent) => (
-              <option key={agent.id} value={agent.id}>{agent.name} - {agent.area}</option>
+              <option key={agent.id} value={agent.id}>
+                {agent.name} - {agent.area?.name || agent.area}
+              </option>
             ))}
           </select>
         </label>

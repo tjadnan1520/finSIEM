@@ -1,9 +1,12 @@
 const prisma = require("../config/prisma");
 const ApiError = require("../utils/ApiError");
 
-const listTransactions = ({ providerId } = {}) => {
+const listTransactions = ({ providerId, agentId } = {}) => {
   return prisma.transaction.findMany({
-    where: providerId ? { providerId } : undefined,
+    where: {
+      ...(providerId ? { providerId } : {}),
+      ...(agentId ? { agentId } : {})
+    },
       include: { provider: true, agent: { include: { area: true } }, area: true },
     orderBy: { createdAt: "desc" },
     take: 50

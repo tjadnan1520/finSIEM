@@ -31,3 +31,154 @@ Backend listening on http://localhost:5000
 [0mGET /api/cases/field-officers?caseId=8255b8a8-02f8-4efb-89b4-25621ab623f3&areaId=4986b977-0c2a-4632-9449-2021ddd9ff83&providerId=dfcd628a-faa2-41d9-a83e-04a3969389ac&region=Dhaka+Metro [36m304[0m 4102.235 ms - -[0m
 [0mPOST /api/auth/login [33m401[0m 952.670 ms - 266[0m
 [0mPOST /api/auth/login [33m401[0m 877.242 ms - 266[0m
+[0mPOST /api/auth/login [32m200[0m 5273.048 ms - 629[0m
+[0mGET /api/auth/me [36m304[0m 1949.614 ms - -[0m
+[0mGET /api/dashboard [32m200[0m 8084.681 ms - 4702[0m
+[0mGET /api/dashboard [36m304[0m 1.780 ms - -[0m
+[0mGET /api/alerts/6a0ab8fc-09c2-4cbd-bf37-aa9159f83a9b [32m200[0m 3443.864 ms - 1583[0m
+[0mGET /api/alerts/6a0ab8fc-09c2-4cbd-bf37-aa9159f83a9b [36m304[0m 3368.117 ms - -[0m
+[0mPOST /api/auth/login [32m200[0m 2531.851 ms - 553[0m
+[0mGET /api/alerts [32m200[0m 3955.827 ms - 581[0m
+[0mPOST /api/auth/login [32m200[0m 2208.852 ms - 553[0m
+[0mGET /api/alerts [32m200[0m 2071.118 ms - 581[0m
+[0mGET /api/alerts/a1cab067-077e-481e-895d-ec3d6712e7f7 [32m200[0m 4170.651 ms - 3094[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Backend listening on http://localhost:5000
+[0mGET /api/auth/me [36m304[0m 3575.217 ms - -[0m
+[0mGET /api/auth/me [36m304[0m 3.595 ms - -[0m
+[0mGET /api/alerts/6a0ab8fc-09c2-4cbd-bf37-aa9159f83a9b [32m200[0m 3022.986 ms - 938[0m
+[0mGET /api/alerts/6a0ab8fc-09c2-4cbd-bf37-aa9159f83a9b [36m304[0m 3454.106 ms - -[0m
+[0mPOST /api/auth/login [32m200[0m 2519.957 ms - 553[0m
+[0mGET /api/alerts [32m200[0m 3909.000 ms - 2827[0m
+[0mGET /api/alerts/a1cab067-077e-481e-895d-ec3d6712e7f7 [32m200[0m 4042.872 ms - 2404[0m
+[0mGET /api/auth/me [36m304[0m 1.190 ms - -[0m
+[0mGET /api/auth/me [36m304[0m 1.607 ms - -[0m
+[0mGET /api/alerts/6a0ab8fc-09c2-4cbd-bf37-aa9159f83a9b [36m304[0m 3339.897 ms - -[0m
+[0mGET /api/alerts/6a0ab8fc-09c2-4cbd-bf37-aa9159f83a9b [36m304[0m 3250.444 ms - -[0m
+[0mGET /api/dashboard [36m304[0m 4250.458 ms - -[0m
+[0mGET /api/dashboard [36m304[0m 1.252 ms - -[0m
+[0mGET /api/alerts/99df444f-003b-49d5-82f3-8c560a7eed80 [32m200[0m 3461.151 ms - 1129[0m
+[0mGET /api/alerts/99df444f-003b-49d5-82f3-8c560a7eed80 [36m304[0m 3216.749 ms - -[0m
+[0mGET /api/dashboard [36m304[0m 2025.179 ms - -[0m
+[0mGET /api/dashboard [36m304[0m 1.202 ms - -[0m
+[0mGET /api/cases [32m200[0m 3187.102 ms - 5721[0m
+[0mGET /api/cases [36m304[0m 3450.365 ms - -[0m
+[0mGET /api/cases/b5d8cc0a-b7b1-4dd0-915e-6b43ebbf5dd5 [32m200[0m 5499.802 ms - 3050[0m
+[0mGET /api/cases/b5d8cc0a-b7b1-4dd0-915e-6b43ebbf5dd5 [36m304[0m 5372.417 ms - -[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+Backend listening on http://localhost:5000
+[0mGET /api/auth/me [36m304[0m 3655.783 ms - -[0m
+[0mGET /api/auth/me [36m304[0m 2.120 ms - -[0m
+[0mGET /api/cases/b5d8cc0a-b7b1-4dd0-915e-6b43ebbf5dd5 [32m200[0m 6189.582 ms - 2275[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ enable debugging { debug: true }
+Backend listening on http://localhost:5000
+[0mGET /api/auth/me [36m304[0m 3607.313 ms - -[0m
+[0mGET /api/auth/me [36m304[0m 1.744 ms - -[0m
+[0mGET /api/cases/b5d8cc0a-b7b1-4dd0-915e-6b43ebbf5dd5 [32m200[0m 6325.267 ms - 2275[0m
+[0mGET /api/cases/b5d8cc0a-b7b1-4dd0-915e-6b43ebbf5dd5 [36m304[0m 6063.513 ms - -[0m
+[0mPOST /api/auth/login [32m200[0m 2943.037 ms - 627[0m
+[0mGET /api/cases [32m200[0m 5763.671 ms - 490[0m
+[0mGET /api/cases/8bdf7e08-d88d-46bb-9626-e8751a461fab [32m200[0m 6744.595 ms - 5019[0m
+[0mGET /api/cases/field-officers?caseId=8bdf7e08-d88d-46bb-9626-e8751a461fab [0m-[0m - ms - -[0m
+[0mPOST /api/auth/login [32m200[0m 2629.387 ms - 627[0m
+[0mGET /api/cases [32m200[0m 4146.800 ms - 490[0m
+[0mGET /api/cases/8bdf7e08-d88d-46bb-9626-e8751a461fab [32m200[0m 7057.637 ms - 5019[0m
+[0mGET /api/cases/field-officers?caseId=8bdf7e08-d88d-46bb-9626-e8751a461fab [32m200[0m 5208.633 ms - 389[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ enable debugging { debug: true }
+Backend listening on http://localhost:5000
+[0mGET /api/cases [32m200[0m 8227.024 ms - 5709[0m
+[0mGET /api/cases [36m304[0m 3638.818 ms - -[0m
+[0mGET /api/cases/b5d8cc0a-b7b1-4dd0-915e-6b43ebbf5dd5 [36m304[0m 7618.081 ms - -[0m
+[0mGET /api/cases/b5d8cc0a-b7b1-4dd0-915e-6b43ebbf5dd5 [36m304[0m 5761.602 ms - -[0m
+[0mGET /api/dashboard [36m304[0m 9226.765 ms - -[0m
+[0mGET /api/dashboard [36m304[0m 3.816 ms - -[0m
+[0mGET /api/alerts/6a0ab8fc-09c2-4cbd-bf37-aa9159f83a9b [36m304[0m 3584.784 ms - -[0m
+[0mGET /api/alerts/6a0ab8fc-09c2-4cbd-bf37-aa9159f83a9b [36m304[0m 3117.296 ms - -[0m
+[0mGET /api/cases [36m304[0m 3917.218 ms - -[0m
+[0mGET /api/cases [36m304[0m 3832.956 ms - -[0m
+[0mPOST /api/auth/login [33m401[0m 1961.159 ms - 266[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+Backend listening on http://localhost:5000
+[0mPOST /api/auth/login [32m200[0m 3495.089 ms - 742[0m
+[0mPOST /api/auth/login [32m200[0m 2335.145 ms - 742[0m
+[0mPOST /api/auth/login [32m200[0m 2387.588 ms - 752[0m
+[0mPOST /api/auth/login [32m200[0m 2483.224 ms - 754[0m
+[0mPOST /api/auth/login [32m200[0m 2442.877 ms - 754[0m
+[0mGET /api/auth/me [32m200[0m 2045.630 ms - 304[0m
+[0mGET /api/dashboard [32m200[0m 5000.648 ms - 370[0m
+[0mGET /api/dashboard [36m304[0m 1.101 ms - -[0m
+[0mGET /api/providers [32m200[0m 1234.140 ms - 659[0m
+[0mGET /api/agents [32m200[0m 1635.745 ms - 4426[0m
+[0mGET /api/transactions [32m200[0m 2144.364 ms - 1614[0m
+[0mGET /api/providers [36m304[0m 1699.092 ms - -[0m
+[0mGET /api/agents [36m304[0m 2167.088 ms - -[0m
+[0mGET /api/transactions [36m304[0m 2612.262 ms - -[0m
+[0mGET /api/dashboard [36m304[0m 0.577 ms - -[0m
+[0mGET /api/dashboard [36m304[0m 0.464 ms - -[0m
+[0mGET /api/providers [36m304[0m 3713.558 ms - -[0m
+[0mGET /api/agents [36m304[0m 4114.332 ms - -[0m
+[0mGET /api/transactions [36m304[0m 4653.453 ms - -[0m
+[0mGET /api/providers [36m304[0m 1315.705 ms - -[0m
+[0mGET /api/agents [36m304[0m 1620.800 ms - -[0m
+[0mGET /api/transactions [36m304[0m 2187.263 ms - -[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node src/server.js`[39m
+◇ injected env (9) from .env // tip: ⌘ suppress logs { quiet: true }
+Backend listening on http://localhost:5000
+[0mGET /api/auth/me [32m200[0m 3322.676 ms - 512[0m
+[0mGET /api/auth/me [36m304[0m 1.403 ms - -[0m
+[0mGET /api/providers [36m304[0m 968.043 ms - -[0m
+[0mGET /api/providers [36m304[0m 1215.677 ms - -[0m
+[0mGET /api/agents [36m304[0m 2543.016 ms - -[0m
+[0mGET /api/transactions [32m200[0m 2945.268 ms - 583[0m
+[0mGET /api/agents [36m304[0m 1286.035 ms - -[0m
+[0mGET /api/transactions [36m304[0m 1876.111 ms - -[0m
+[0mPOST /api/auth/login [32m200[0m 5755.922 ms - 742[0m
+[0mGET /api/dashboard [32m200[0m 5441.562 ms - 967[0m
+[0mPOST /api/auth/login [32m200[0m 2395.689 ms - 742[0m
+[0mGET /api/transactions [32m200[0m 2071.559 ms - 577[0m
+[0mPOST /api/auth/login [32m200[0m 2292.904 ms - 742[0m
+[0mGET /api/auth/me [32m200[0m 1780.587 ms - 509[0m
+[0mGET /api/dashboard [32m200[0m 3757.755 ms - 967[0m
+[0mGET /api/dashboard [36m304[0m 1.631 ms - -[0m
+[0mGET /api/providers [36m304[0m 946.714 ms - -[0m
+[0mGET /api/agents [36m304[0m 1308.551 ms - -[0m
+[0mGET /api/transactions [32m200[0m 1795.614 ms - 577[0m
+[0mGET /api/providers [36m304[0m 932.134 ms - -[0m
+[0mGET /api/agents [36m304[0m 1389.011 ms - -[0m
+[0mGET /api/transactions [36m304[0m 1790.611 ms - -[0m
+[0mPOST /api/transactions [33m422[0m 7.742 ms - 699[0m
+[0mPOST /api/transactions [32m201[0m 6424.750 ms - 385[0m
+[0mGET /api/transactions [32m200[0m 1875.592 ms - 845[0m
+[0mGET /api/dashboard [32m200[0m 1582.995 ms - 1235[0m
+[0mGET /api/dashboard [36m304[0m 0.955 ms - -[0m
+[0mPOST /api/auth/login [32m200[0m 2242.356 ms - 752[0m
+[0mGET /api/auth/me [32m200[0m 1994.155 ms - 510[0m
+[0mGET /api/dashboard [32m200[0m 4031.082 ms - 958[0m
+[0mGET /api/dashboard [36m304[0m 1.302 ms - -[0m
+[0mPOST /api/auth/login [32m200[0m 2696.278 ms - 754[0m
+[0mGET /api/auth/me [32m200[0m 1792.674 ms - 512[0m
+[0mGET /api/dashboard [32m200[0m 3554.097 ms - 973[0m
+[0mGET /api/dashboard [36m304[0m 0.801 ms - -[0m
+[0mPOST /api/auth/login [32m200[0m 3198.732 ms - 650[0m
+[0mGET /api/auth/me [32m200[0m 1824.527 ms - 434[0m
+[0mGET /api/dashboard [32m200[0m 5438.655 ms - 903[0m
+[0mGET /api/dashboard [36m304[0m 0.449 ms - -[0m

@@ -7,7 +7,8 @@ const getRoleFilters = (user) => {
       alerts: { severity: "HIGH", providerId },
       cases: { priority: "HIGH", alert: { providerId } },
       transactions: { providerId },
-      providers: { id: providerId }
+      providers: { id: providerId },
+      physicalCash: {}
     };
   }
 
@@ -16,11 +17,33 @@ const getRoleFilters = (user) => {
       alerts: { severity: "CRITICAL" },
       cases: { priority: "CRITICAL" },
       transactions: {},
-      providers: {}
+      providers: {},
+      physicalCash: {}
     };
   }
 
-  if (user?.role === "Field Officer" || user?.role === "Agent") {
+  if (user?.role === "Agent") {
+    const agentId = user.agent?.id || "__no_agent_assigned__";
+    return {
+      alerts: {
+        case: {
+          assignments: {
+            some: { assignedToId: user.id }
+          }
+        }
+      },
+      cases: {
+        assignments: {
+          some: { assignedToId: user.id }
+        }
+      },
+      transactions: { agentId },
+      providers: {},
+      physicalCash: { agentId }
+    };
+  }
+
+  if (user?.role === "Field Officer") {
     return {
       alerts: {
         case: {
@@ -35,7 +58,8 @@ const getRoleFilters = (user) => {
         }
       },
       transactions: { id: "__hide_transactions__" },
-      providers: { id: "__hide_providers__" }
+      providers: { id: "__hide_providers__" },
+      physicalCash: { id: "__hide_physical_cash__" }
     };
   }
 
@@ -43,7 +67,8 @@ const getRoleFilters = (user) => {
     alerts: {},
     cases: {},
     transactions: {},
-    providers: {}
+    providers: {},
+    physicalCash: {}
   };
 };
 
@@ -77,6 +102,7 @@ const getDashboardData = async ({ includeCases = false, user = null } = {}) => {
       orderBy: { name: "asc" }
     }),
     prisma.physicalCash.findMany({
+      where: roleFilters.physicalCash,
       select: {
         balance: true
       }
@@ -135,6 +161,7 @@ const getDashboardData = async ({ includeCases = false, user = null } = {}) => {
             alert: { select: { provider: { select: { name: true } } } },
             agent: { select: { id: true, name: true, phone: true, area: { select: { name: true } } } },
             assignments: {
+              where: { assignedTo: { role: { name: "Field Officer" } } },
               select: { assignedTo: { select: { name: true } } },
               orderBy: { assignedAt: "desc" },
               take: 1

@@ -25,6 +25,25 @@ const buildSummaryCards = ({ providers, physicalCash }) => {
   ];
 };
 
+const buildAgentSummaryCards = ({ providers, physicalCash }) => {
+  const agentPhysicalCash = physicalCash.reduce((sum, cash) => sum + toNumber(cash.balance), 0);
+  const providerCards = providerOrder.map((name) => {
+    const provider = providers.find((item) => item.name.toLowerCase() === name.toLowerCase());
+
+    return {
+      label: name,
+      value: toNumber(provider?.balances[0]?.balance),
+      format: "currency",
+      tone: provider?.balances[0]?.feedStatus === "DELAYED" ? "warning" : "info"
+    };
+  });
+
+  return [
+    { label: "My Physical Cash", value: agentPhysicalCash, format: "currency", tone: "success" },
+    ...providerCards
+  ];
+};
+
 const buildOperatorSummaryCards = ({ recentTransactions, recentAlerts, openCases }) => [
   { label: "Open Cases", value: openCases.filter((caseRecord) => caseRecord.status !== "RESOLVED" && caseRecord.status !== "CLOSED").length, format: "number", tone: "warning" },
   { label: "Recent Alerts", value: recentAlerts.length, format: "number", tone: "danger" },
@@ -91,7 +110,9 @@ const loadDashboard = async (user) => {
     ? buildOperatorSummaryCards(raw)
     : role === "Management"
       ? buildManagementSummaryCards(raw)
-      : role === "Field Officer" || role === "Agent"
+      : role === "Agent"
+        ? buildAgentSummaryCards(raw)
+      : role === "Field Officer"
         ? buildFieldOfficerSummaryCards(raw)
         : buildSummaryCards(raw);
 
